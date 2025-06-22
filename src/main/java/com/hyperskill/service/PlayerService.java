@@ -1,6 +1,5 @@
 package com.hyperskill.service;
 
-import com.hyperskill.entity.Person;
 import com.hyperskill.entity.Player;
 import com.hyperskill.entity.Team;
 import com.hyperskill.repository.PlayerRepository;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlayerService {
@@ -21,7 +21,7 @@ public class PlayerService {
     }
 
     public Player add(Player player){
-        List<Team> teams = teamRepository.getAll();
+        List<Team> teams = teamRepository.findAll();
         if(!teams.contains(player.getTeam())){
             //TODO add exception
             return null;
@@ -35,20 +35,22 @@ public class PlayerService {
         playerRepository.saveAll(players);
     }
 
-    public Player getById(Long id){
-        return playerRepository.getById(id);
+    public Optional<Player> findById(Long id){
+        //TODO add exception
+        return playerRepository.findById(id);
     }
 
-    public Player getByFullName(Person person){
-        return playerRepository.getByFirstNameAndLastName(person);
+    public Player findByFullName(String firstName, String lastName){
+        //TODO add exception
+        return playerRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 
-    public Collection<Player> getPlayers(){
+    public List<Player> findPlayers(){
         //TODO add pagination and sorting
-        return playerRepository.getAll();
+        return playerRepository.findAll();
     }
 
-    public Collection<Player> getPlayersByTeam(Team team){
+    public Collection<Player> findPlayersByTeam(Team team){
         return team.getPlayers();
     }
 
@@ -58,8 +60,8 @@ public class PlayerService {
             return null;
         }
 
-        Player player = playerRepository.getById(id);
+        Optional<Player> player = playerRepository.findById(id);
         playerRepository.deleteById(id);
-        return player;
+        return player.get();
     }
 }
