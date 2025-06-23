@@ -1,13 +1,13 @@
 package com.hyperskill.statistics;
 
 import com.hyperskill.FootballStatisticsDB;
+import com.hyperskill.entity.Goal;
 import com.hyperskill.entity.Match;
 import com.hyperskill.entity.Player;
 import com.hyperskill.entity.Team;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PlayerStatistics {
 
@@ -47,10 +47,9 @@ public class PlayerStatistics {
         }
         for (Match match : currTeam.getAllMatches()) {
             if (match.getMatchDate().getYear() == year) {
-                Map<Player, Integer> goalsScorer = match.getGoalScorers();
-                for (Player scorer : goalsScorer.keySet()) {
-                    if (scorer.equals(player)) {
-                        amountGoals += goalsScorer.get(scorer);
+                for (Goal goal : match.getGoals()) {
+                    if (goal.getPlayer().equals(player)) {
+                        amountGoals++;
                     }
                 }
             }
