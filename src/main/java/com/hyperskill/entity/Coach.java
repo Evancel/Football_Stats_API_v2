@@ -1,10 +1,7 @@
 package com.hyperskill.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -20,30 +17,50 @@ public class Coach extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    private String teamName;
+
+    @OneToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
     private int playedMatches;
 
     public Coach() {}
 
+    public Coach(String firstName, String lastName, Team team) {
+        super(firstName, lastName);
+        this.team = team;
+    }
+
+    // Constructor for backward compatibility
     public Coach(String firstName, String lastName, String teamName) {
         super(firstName, lastName);
-        this.teamName = teamName;
+        // This constructor is kept for backward compatibility
+        // The team will be set later using setTeam method
     }
 
     public Long getId() {
         return id;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
     public String getTeamName() {
-        return teamName;
+        return team != null ? team.getName() : null;
     }
 
     public int getPlayedMatches() {
         return playedMatches;
     }
 
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
     public void setTeamName(String teamName) {
-        this.teamName = teamName;
+        // This method is kept for backward compatibility
+        // It doesn't do anything as we now use Team object
     }
 
     public void incrementMatchesPlayed() {
@@ -54,7 +71,7 @@ public class Coach extends Person {
     public String toString() {
         return "Coach{" + "firstName = " + super.getFirstName() +
                 ", lastName = " + super.getLastName()
-                + ", team=" + teamName + '}';
+                + ", team=" + (team != null ? team.getName() : "null") + '}';
     }
 
     @Override
