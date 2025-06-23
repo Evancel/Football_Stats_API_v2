@@ -1,14 +1,11 @@
 package com.hyperskill.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,11 +14,21 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_team_id")
     private Team homeTeam;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "away_team_id")
     private Team awayTeam;
+
     private int homeScore;
     private int awayScore;
-    private Map<Player, Integer> goalScorers;
+
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Goal> goals = new ArrayList<>();
+
     private LocalDateTime matchDate;
 
     public Match() {}
@@ -31,7 +38,7 @@ public class Match {
         this.awayTeam = awayTeam;
         this.homeScore = 0;
         this.awayScore = 0;
-        this.goalScorers = new HashMap<>();
+        this.goals = new ArrayList<>();
         this.matchDate = matchDate;
     }
 
@@ -41,16 +48,16 @@ public class Match {
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.matchDate = matchDate;
-        this.goalScorers = new HashMap<>();
+        this.goals = new ArrayList<>();
     }
 
-    // New constructor that takes goalScorers
-    public Match(Team homeTeam, Team awayTeam, int homeScore, int awayScore, Map<Player, Integer> goalScorers, LocalDateTime matchDate) {
+    // New constructor that takes a list of goals
+    public Match(Team homeTeam, Team awayTeam, int homeScore, int awayScore, List<Goal> goals, LocalDateTime matchDate) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
-        this.goalScorers = new HashMap<>(goalScorers);
+        this.goals = new ArrayList<>(goals);
         this.matchDate = matchDate;
     }
 
@@ -121,10 +128,10 @@ public class Match {
             player.incrementMatchesPlayed();
         }
 
-        for (Map.Entry<Player, Integer> entry : goalScorers.entrySet()) {
-            Player player = entry.getKey();
-            int goals = entry.getValue();
-            player.addGoals(goals);
+        // Count goals per player from the goals list
+        for (Goal goal : goals) {
+            Player player = goal.getPlayer();
+            player.addGoals(1); // Each goal object represents one goal
         }
     }
 
@@ -149,7 +156,14 @@ public class Match {
                 homeTeam.getName(), homeScore, awayScore, awayTeam.getName()));
         summary.append("Goal Scorers:\n");
 
-        for (Map.Entry<Player, Integer> entry : goalScorers.entrySet()) {
+        // Group goals by player to count how many each player scored
+        java.util.Map<Player, Integer> goalsByPlayer = new java.util.HashMap<>();
+        for (Goal goal : goals) {
+            Player player = goal.getPlayer();
+            goalsByPlayer.put(player, goalsByPlayer.getOrDefault(player, 0) + 1);
+        }
+
+        for (java.util.Map.Entry<Player, Integer> entry : goalsByPlayer.entrySet()) {
             summary.append(String.format("- %s %s: %d goals\n",
                     entry.getKey().getFirstName(),
                     entry.getKey().getLastName(),
@@ -160,12 +174,18 @@ public class Match {
     }
 
     // Getters and setters
-    public Map<Player, Integer> getGoalScorers() {
-        return goalScorers;
+    public List<Goal> getGoals() {
+        return goals;
     }
 
-    public void setGoalScorers(Map<Player, Integer> goalScorers) {
-        this.goalScorers = goalScorers;
+    public void setGoals(List<Goal> goals) {
+        this.goals = goals;
+    }
+
+    // Helper method to add a goal
+    public void addGoal(Goal goal) {
+        goals.add(goal);
+        goal.setMatch(this);
     }
 
     public LocalDateTime getMatchDate() {
