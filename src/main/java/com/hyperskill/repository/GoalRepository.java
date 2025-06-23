@@ -18,34 +18,34 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
      * @param match the match
      * @return list of goals
      */
-    List<Goal> findByMatch(Match match);
-    
+    List<Goal> findGoalsByMatch(Match match);
+
     /**
      * Find all goals scored by a player
      * @param player the player
      * @return list of goals
      */
-    List<Goal> findByPlayer(Player player);
-    
+    List<Goal> findGoalsByPlayer(Player player);
+
     /**
      * Find all goals scored by a player in a match
      * @param match the match
      * @param player the player
      * @return list of goals
      */
-    List<Goal> findByMatchAndPlayer(Match match, Player player);
-    
+    List<Goal> findGoalsByMatchAndPlayer(Match match, Player player);
+
     /**
      * Count the number of goals scored in a match
      * @param match the match
      * @return the number of goals
      */
-    long countByMatch(Match match);
-    
+    long countGoalsByMatch(Match match);
+
     /**
      * Count the number of goals scored by a player
      * @param player the player
      * @return the number of goals
      */
-    long countByPlayer(Player player);
+    long countGoalsByPlayer(Player player);
 }
