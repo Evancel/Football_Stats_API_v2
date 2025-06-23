@@ -2,10 +2,7 @@ package com.hyperskill.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyperskill.FootballStatisticsDB;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.*;
 
@@ -23,8 +20,15 @@ public class Team {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Player> players = new HashSet<>();
+
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Coach coach;
+
+    // This is a transient field that will be populated programmatically
+    // It includes both matches where the team is homeTeam and awayTeam
+    @Transient
     private Set<Match> allMatches = new HashSet<>();
     private int goalScored;
 

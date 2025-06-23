@@ -1,5 +1,8 @@
 package com.hyperskill.entity;
 
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class Person {
     private String firstName;
     private String lastName;
@@ -28,4 +31,3 @@ public abstract class Person {
         this.lastName = lastName;
     }
 }
-
