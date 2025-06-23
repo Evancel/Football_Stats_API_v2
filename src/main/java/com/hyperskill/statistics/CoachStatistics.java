@@ -1,6 +1,6 @@
 package com.hyperskill.statistics;
 
-import com.hyperskill.FootballStatisticsDB;
+/*
 import com.hyperskill.entity.Coach;
 import com.hyperskill.entity.Match;
 import com.hyperskill.entity.Team;
@@ -42,6 +42,7 @@ public class CoachStatistics {
      * @return A list of coaches sorted by goals scored (descending)
      * @throws IllegalArgumentException if n is less than or equal to 0
      */
+/*
     public List<Coach> findTopCoachesByGoalsScored(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException("Parameter n must be a positive integer");
@@ -84,6 +85,7 @@ public class CoachStatistics {
      * Calculates the number of victories for each coach based on match results
      * @return A map with coaches as keys and their victories as values
      */
+/*
     public Map<Coach, Integer> calculateVictoriesForAllCoaches() {
         Map<Coach, Integer> victories = new HashMap<>();
 
@@ -108,6 +110,7 @@ public class CoachStatistics {
      * Calculates the goals scored by teams for each coach
      * @return A map with coaches as keys and their team's goals as values
      */
+/*
     private Map<Coach, Integer> calculateGoalsScoredForAllCoaches() {
         Map<Coach, Integer> goalsScored = new HashMap<>();
 
@@ -128,6 +131,7 @@ public class CoachStatistics {
      * @param n          The number of top coaches to return
      * @return A list of the top n coaches sorted by the statistic value (descending)
      */
+/*
     private List<Coach> getTopNCoaches(Map<Coach, Integer> coachStats, int n) {
         List<Map.Entry<Coach, Integer>> entryList = new ArrayList<>(coachStats.entrySet());
         entryList.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
@@ -145,6 +149,7 @@ public class CoachStatistics {
      * @return A list of coaches sorted by number of losses (descending)
      * @throws IllegalArgumentException if n is less than or equal to 0
      */
+/*
     public List<Coach> findWorstCoachesByLosses(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException("Parameter n must be a positive integer");
@@ -160,6 +165,7 @@ public class CoachStatistics {
      * @return A list of coaches sorted by goals conceded (descending)
      * @throws IllegalArgumentException if n is less than or equal to 0
      */
+/*
     public List<Coach> findWorstCoachesByGoalsConceded(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException("Parameter n must be a positive integer");
@@ -173,6 +179,7 @@ public class CoachStatistics {
      * Calculates the number of losses for each coach based on match results
      * @return A map with coaches as keys and their losses as values
      */
+/*
     public Map<Coach, Integer> calculateLossesForAllCoaches() {
         Map<Coach, Integer> losses = new HashMap<>();
 
@@ -197,6 +204,7 @@ public class CoachStatistics {
      * Calculates the goals conceded by teams for each coach
      * @return A map with coaches as keys and their team's goals conceded as values
      */
+/*
     public Map<Coach, Integer> calculateGoalsConcededForAllCoaches() {
         Map<Coach, Integer> goalsConceded = new HashMap<>();
 
@@ -224,3 +232,4 @@ public class CoachStatistics {
     }
 
 }
+*/

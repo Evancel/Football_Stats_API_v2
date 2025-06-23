@@ -49,10 +49,12 @@ public class PlayerService {
         //TODO add pagination and sorting
         return playerRepository.findAll();
     }
-
+/*
     public Collection<Player> findPlayersByTeam(Team team){
         return team.getPlayers();
     }
+
+ */
 
     public Player deleteById(Long id){
         if(!playerRepository.existsById(id)){

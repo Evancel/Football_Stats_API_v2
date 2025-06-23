@@ -1,6 +1,5 @@
 package com.hyperskill.statistics;
-
-import com.hyperskill.FootballStatisticsDB;
+/*
 import com.hyperskill.entity.Match;
 import com.hyperskill.entity.Team;
 
@@ -218,6 +217,7 @@ public class TeamStatistics {
      * @return a collection of map entries, where each entry consists of a team's name as the key
      * and its win count as the value, sorted in descending order of wins.
      */
+/*
     public static Collection<Map.Entry<String, Integer>> topWinsTeams(int amountTeams) {
         Map<String, Integer> allTeamsWithWinMatches = new HashMap<>();
         Collection<Team> allTeams = FootballStatisticsDB.getTeams();
@@ -237,6 +237,7 @@ public class TeamStatistics {
      * @return a collection of map entries, where each entry consists of a team's name as the key
      * and its loss count as the value, sorted in descending order of losses.
      */
+/*
     public static Collection<Map.Entry<String, Integer>> topLosesTeams(int amountTeams) {
         Map<String, Integer> allTeamsWithLoseMatches = new HashMap<>();
         Collection<Team> allTeams = FootballStatisticsDB.getTeams();
@@ -256,6 +257,7 @@ public class TeamStatistics {
      * @return a collection of map entries, where each entry consists of a team's name as the key
      * and its draw count as the value, sorted in descending order of draws.
      */
+/*
     public static Collection<Map.Entry<String, Integer>> topDrawsTeams(int amountTeams) {
         Map<String, Integer> allTeamsWithDrawMatches = new HashMap<>();
         Collection<Team> allTeams = FootballStatisticsDB.getTeams();
@@ -323,3 +325,5 @@ public class TeamStatistics {
         return sortedTeams.subList(0, Math.min(amountTeams, sortedTeams.size()));
     }
 }
+
+ */

@@ -1,6 +1,6 @@
 package com.hyperskill.statistics;
 
-import com.hyperskill.FootballStatisticsDB;
+/*
 import com.hyperskill.entity.Goal;
 import com.hyperskill.entity.Match;
 import com.hyperskill.entity.Player;
@@ -85,3 +85,6 @@ public class PlayerStatistics {
         return matchesPerYear == 0 ? 0.0 : (double) goalsScoredPerYear(player, year) / matchesPerYear;
     }
 }
+
+
+ */
