@@ -98,7 +98,7 @@ public class Match {
         }
         return homeScore < awayScore ? homeTeam : awayTeam;
     }
-
+/*
     public void updateStats() {
         // Update team statistics
         updateTeamStats();
@@ -187,6 +187,8 @@ public class Match {
         goals.add(goal);
         goal.setMatch(this);
     }
+
+ */
 
     public LocalDateTime getMatchDate() {
         return matchDate;

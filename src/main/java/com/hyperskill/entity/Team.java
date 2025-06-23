@@ -1,7 +1,6 @@
 package com.hyperskill.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hyperskill.FootballStatisticsDB;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -62,7 +61,7 @@ public class Team {
     public int getGoalScored() {
         return this.goalScored;
     }
-
+/*
     public void addGoals(int goalScored) {
         this.goalScored += goalScored;
     }
@@ -260,4 +259,6 @@ public class Team {
         }
         return coach.getTeamName().equalsIgnoreCase(teamName);
     }
+
+ */
 }
