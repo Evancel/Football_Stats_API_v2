@@ -5,10 +5,9 @@ import com.hyperskill.entity.Team;
 import com.hyperskill.repository.PlayerRepository;
 import com.hyperskill.repository.TeamRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PlayerService {
@@ -20,28 +19,42 @@ public class PlayerService {
         this.teamRepository = teamRepository;
     }
 
-    public Player add(Player player){
-        List<Team> teams = teamRepository.findAll();
-        if(!teams.contains(player.getTeam())){
-            //TODO add exception
-            return null;
-        }
+    @Transactional
+    public Player save(Player player) {
+        String currTeamName = player.getTeam().getName();
 
-        playerRepository.save(player);
-        return player;
+        Team team = findOrCreateTeam(currTeamName);
+        player.setTeam(team);
+
+        return playerRepository.save(player);
     }
+
+    @Transactional
+    public Player updatePlayer(Long playerId, String firstName, String lastName, String teamName) {
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        // Update player fields
+        player.setFirstName(firstName);
+        player.setLastName(lastName);
+
+        // Find or create team
+        Team team = findOrCreateTeam(teamName);
+        player.setTeam(team);
+
+        return playerRepository.save(player);
+    }
+
 
     public void addAll(List<Player> players){
         playerRepository.saveAll(players);
     }
 
     public Optional<Player> findById(Long id){
-        //TODO add exception
         return playerRepository.findById(id);
     }
 
-    public Player findByFullName(String firstName, String lastName){
-        //TODO add exception
+    public List<Player> searchByName(String firstName, String lastName){
         return playerRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 
@@ -49,21 +62,22 @@ public class PlayerService {
         //TODO add pagination and sorting
         return playerRepository.findAll();
     }
-/*
-    public Collection<Player> findPlayersByTeam(Team team){
-        return team.getPlayers();
+
+    public boolean deleteById(Long id){
+        if (!playerRepository.existsById(id)) {
+            return false;
+        }
+        playerRepository.deleteById(id);
+        return true;
     }
 
- */
+    public List<Player> findByTeamName(String teamName){
+        return playerRepository.findByTeam_Name(teamName);
+    }
 
-    public Player deleteById(Long id){
-        if(!playerRepository.existsById(id)){
-            //TODO add exception
-            return null;
-        }
-
-        Optional<Player> player = playerRepository.findById(id);
-        playerRepository.deleteById(id);
-        return player.get();
+    private Team findOrCreateTeam(String teamName) {
+        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
+        return optionalTeam.orElseGet(() ->
+                teamRepository.save(new Team(teamName)));
     }
 }

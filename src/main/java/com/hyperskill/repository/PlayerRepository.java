@@ -10,7 +10,8 @@ import java.util.Optional;
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Optional<Player> findById(Long id);
-    Player findByFirstNameAndLastName(String firstName, String lastName);
+    List<Player> findByTeam_Name(String teamName);
+    List<Player> findByFirstNameAndLastName(String firstName, String lastName);
     List<Player> findAll();
     void deleteById(Long id);
 }
