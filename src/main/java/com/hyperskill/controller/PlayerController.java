@@ -4,6 +4,7 @@ import com.hyperskill.entity.Player;
 import com.hyperskill.dto.PlayerDTO;
 import com.hyperskill.mapper.PlayerMapper;
 import com.hyperskill.service.PlayerService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class PlayerController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> add(@RequestBody PlayerDTO request){
+    public ResponseEntity<?> add(@Valid @RequestBody PlayerDTO request){
         if(request == null){
             return ResponseEntity.badRequest().build();
         }
@@ -52,7 +53,7 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody PlayerDTO dto) {
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody PlayerDTO dto) {
         try {
             Player updated = playerService.updatePlayer(id, dto.getFirstName(), dto.getLastName(), dto.getTeamName());
             return ResponseEntity.ok().build();
