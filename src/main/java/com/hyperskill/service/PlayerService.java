@@ -2,25 +2,36 @@ package com.hyperskill.service;
 
 import com.hyperskill.entity.Player;
 import com.hyperskill.entity.Team;
+import com.hyperskill.exception.PlayerAlreadyExistsException;
+import com.hyperskill.exception.PlayerNotFoundException;
 import com.hyperskill.repository.PlayerRepository;
 import com.hyperskill.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final TeamRepository teamRepository;
 
-    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository){
+    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository) {
         this.playerRepository = playerRepository;
         this.teamRepository = teamRepository;
     }
 
     @Transactional
     public Player save(Player player) {
+        Optional<Player> existing = playerRepository.findByFirstNameAndLastName(
+                player.getFirstName(), player.getLastName());
+
+        if (existing.isPresent()) {
+            throw new PlayerAlreadyExistsException(
+                    "Player already exists: " + player.getFirstName() + " " + player.getLastName());
+        }
+
         String currTeamName = player.getTeam().getName();
 
         Team team = findOrCreateTeam(currTeamName);
@@ -31,8 +42,18 @@ public class PlayerService {
 
     @Transactional
     public Player updatePlayer(Long playerId, String firstName, String lastName, String teamName) {
+        //if the player with such firstName and lastName already exist
+        Optional<Player> existing = playerRepository.findByFirstNameAndLastName(
+                firstName, lastName);
+
+        if (existing.isPresent()) {
+            throw new PlayerAlreadyExistsException(
+                    "Player already exists: " + firstName + " " + lastName);
+        }
+
+        //if the player with such id doesn't exist
         Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
 
         // Update player fields
         player.setFirstName(firstName);
@@ -46,32 +67,32 @@ public class PlayerService {
     }
 
 
-    public void addAll(List<Player> players){
+    public void addAll(List<Player> players) {
         playerRepository.saveAll(players);
     }
 
-    public Optional<Player> findById(Long id){
-        return playerRepository.findById(id);
+    public Player findById(Long id) {
+        return playerRepository.findById(id).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
     }
 
-    public List<Player> searchByName(String firstName, String lastName){
-        return playerRepository.findByFirstNameAndLastName(firstName, lastName);
+    public Player searchByName(String firstName, String lastName) {
+        return playerRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
     }
 
-    public List<Player> findPlayers(){
+    public List<Player> findPlayers() {
         //TODO add pagination and sorting
         return playerRepository.findAll();
     }
 
-    public boolean deleteById(Long id){
+    public void deleteById(Long id) {
         if (!playerRepository.existsById(id)) {
-            return false;
+            throw new PlayerNotFoundException("Player with id: " + id + " not found");
         }
         playerRepository.deleteById(id);
-        return true;
     }
 
-    public List<Player> findByTeamName(String teamName){
+    public List<Player> findByTeamName(String teamName) {
         return playerRepository.findByTeam_Name(teamName);
     }
 

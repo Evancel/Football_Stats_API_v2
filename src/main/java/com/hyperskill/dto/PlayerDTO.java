@@ -16,7 +16,8 @@ public class PlayerDTO {
     @Size(min = 3, max = 100)
     private String teamName;
 
-    public PlayerDTO(){}
+    public PlayerDTO() {
+    }
 
     public String getFirstName() {
         return firstName;

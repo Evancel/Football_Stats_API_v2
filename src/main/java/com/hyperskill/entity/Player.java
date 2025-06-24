@@ -12,6 +12,10 @@ import java.util.Objects;
  * Methods: display/update stats (goals scored, matches played, average goals scored, etc.) by year and total, etc.
  */
 @Entity
+@Table(
+        name = "player",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"firstName", "lastName"})
+)
 public class Player extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +30,8 @@ public class Player extends Person {
     private int goals;
     private int playedMatches;
 
-    public Player() {}
+    public Player() {
+    }
 
     //deprecated
     public Player(String firstName, String lastName, String teamName) {

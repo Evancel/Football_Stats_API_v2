@@ -38,4 +38,20 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(PlayerNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNoSuchElement(PlayerNotFoundException ex) {
+        log.warn("Player not found: {}", ex.getMessage());
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "Player not found");
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(PlayerAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleNoSuchElement(PlayerAlreadyExistsException ex) {
+        log.warn("Player already exists {}", ex.getMessage());
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "Player already exists");
+        return ResponseEntity.badRequest().body(error);
+    }
 }

@@ -225,3 +225,72 @@ SELECT * FROM (
 ) AS players(first_name, last_name, team_id, goals, played_matches);
 
 COMMIT;
+
+-- Insert MATCHES and GOALS
+-- MATCH 1: Manchester City vs. Liverpool (no goals)
+WITH home_id AS (SELECT id FROM team WHERE name = 'Manchester City'),
+     away_id AS (SELECT id FROM team WHERE name = 'Liverpool')
+INSERT INTO match (home_team_id, away_team_id, home_score, away_score, match_date)
+SELECT home_id.id, away_id.id, 0, 0, '2023-10-15 15:00:00'
+FROM home_id, away_id;
+
+-- MATCH 2: Real Madrid vs. FC Barcelona
+WITH home_id AS (SELECT id FROM team WHERE name = 'Real Madrid'),
+     away_id AS (SELECT id FROM team WHERE name = 'FC Barcelona'),
+     inserted_match AS (
+         INSERT INTO match (home_team_id, away_team_id, home_score, away_score, match_date)
+         SELECT home_id.id, away_id.id, 3, 1, '2023-09-25 20:45:00'
+         FROM home_id, away_id
+         RETURNING id
+     )
+INSERT INTO goal (match_id, player_id)
+SELECT inserted_match.id, p.id
+FROM inserted_match, player p, team t
+WHERE p.team_id = t.id AND t.name = 'Real Madrid'
+  AND ((p.first_name = 'Vinicius' AND p.last_name = 'Junior')
+    OR (p.first_name = 'Karim' AND p.last_name = 'Benzema'))
+UNION ALL
+SELECT inserted_match.id, p.id
+FROM inserted_match, player p, team t
+WHERE p.team_id = t.id AND t.name = 'FC Barcelona'
+  AND p.first_name = 'Robert' AND p.last_name = 'Lewandowski';
+
+-- MATCH 3: Bayern Munich vs. Ajax
+WITH home_id AS (SELECT id FROM team WHERE name = 'Bayern Munich'),
+     away_id AS (SELECT id FROM team WHERE name = 'Ajax'),
+     inserted_match AS (
+         INSERT INTO match (home_team_id, away_team_id, home_score, away_score, match_date)
+         SELECT home_id.id, away_id.id, 4, 0, '2023-09-20 18:30:00'
+         FROM home_id, away_id
+         RETURNING id
+     )
+INSERT INTO goal (match_id, player_id)
+SELECT inserted_match.id, p.id
+FROM inserted_match, player p, team t
+WHERE p.team_id = t.id AND t.name = 'Bayern Munich'
+  AND ((p.first_name = 'Harry' AND p.last_name = 'Kane')
+    OR (p.first_name = 'Thomas' AND p.last_name = 'Muller')
+    OR (p.first_name = 'Leon' AND p.last_name = 'Goretzka'));
+
+-- MATCH 4: Liverpool vs. Inter Milan
+WITH home_id AS (SELECT id FROM team WHERE name = 'Liverpool'),
+     away_id AS (SELECT id FROM team WHERE name = 'Inter Milan'),
+     inserted_match AS (
+         INSERT INTO match (home_team_id, away_team_id, home_score, away_score, match_date)
+         SELECT home_id.id, away_id.id, 2, 1, '2023-10-05 19:00:00'
+         FROM home_id, away_id
+         RETURNING id
+     )
+INSERT INTO goal (match_id, player_id)
+SELECT inserted_match.id, p.id
+FROM inserted_match, player p, team t
+WHERE p.team_id = t.id AND t.name = 'Liverpool'
+  AND ((p.first_name = 'Mohamed' AND p.last_name = 'Salah')
+    OR (p.first_name = 'Darwin' AND p.last_name = 'Nunez'))
+UNION ALL
+SELECT inserted_match.id, p.id
+FROM inserted_match, player p, team t
+WHERE p.team_id = t.id AND t.name = 'Inter Milan'
+  AND p.first_name = 'Lautaro' AND p.last_name = 'Martinez';
+
+COMMIT;
