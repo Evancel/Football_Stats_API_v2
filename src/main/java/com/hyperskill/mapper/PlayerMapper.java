@@ -1,4 +1,8 @@
-package com.hyperskill.entity;
+package com.hyperskill.mapper;
+
+import com.hyperskill.dto.PlayerDTO;
+import com.hyperskill.entity.Player;
+import com.hyperskill.entity.Team;
 
 public class PlayerMapper {
     public static PlayerDTO toDTO(Player player) {

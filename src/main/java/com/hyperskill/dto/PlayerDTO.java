@@ -1,4 +1,4 @@
-package com.hyperskill.entity;
+package com.hyperskill.dto;
 
 public class PlayerDTO {
     private String firstName;

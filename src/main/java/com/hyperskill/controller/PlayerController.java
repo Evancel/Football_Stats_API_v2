@@ -1,8 +1,8 @@
 package com.hyperskill.controller;
 
 import com.hyperskill.entity.Player;
-import com.hyperskill.entity.PlayerDTO;
-import com.hyperskill.entity.PlayerMapper;
+import com.hyperskill.dto.PlayerDTO;
+import com.hyperskill.mapper.PlayerMapper;
 import com.hyperskill.service.PlayerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
