@@ -3,7 +3,6 @@ package com.hyperskill.service;
 import com.hyperskill.dto.PlayerDTO;
 import com.hyperskill.entity.Player;
 import com.hyperskill.entity.Team;
-import com.hyperskill.exception.PlayerAlreadyExistsException;
 import com.hyperskill.exception.PlayerNotFoundException;
 import com.hyperskill.mapper.PlayerMapper;
 import com.hyperskill.repository.PlayerRepository;

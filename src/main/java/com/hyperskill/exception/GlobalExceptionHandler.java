@@ -46,12 +46,4 @@ public class GlobalExceptionHandler {
         error.put("message", "Player not found");
         return ResponseEntity.badRequest().body(error);
     }
-
-    @ExceptionHandler(PlayerAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>> handlePlayerAlreadyExistsException(PlayerAlreadyExistsException ex) {
-        log.warn("Player already exists {}", ex.getMessage());
-        Map<String, String> error = new HashMap<>();
-        error.put("message", "Player already exists");
-        return ResponseEntity.badRequest().body(error);
-    }
 }
