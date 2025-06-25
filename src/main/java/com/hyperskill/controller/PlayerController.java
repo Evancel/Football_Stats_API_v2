@@ -93,18 +93,6 @@ public class PlayerController {
     }
 
     /**
-     * Retrieves players by team name.
-     *
-     * @param teamName the name of the team
-     * @return ResponseEntity with list of players in the team
-     */
-    @GetMapping("/team/{teamName}")
-    public ResponseEntity<List<PlayerDTO>> findByTeam(@PathVariable String teamName) {
-        List<PlayerDTO> dtos = playerService.findDTOsByTeamName(teamName);
-        return ResponseEntity.ok(dtos);
-    }
-
-    /**
      * Retrieves statistics for a specific player.
      *
      * @param id the ID of the player
