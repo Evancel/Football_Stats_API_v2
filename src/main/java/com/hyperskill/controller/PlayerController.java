@@ -2,7 +2,6 @@ package com.hyperskill.controller;
 
 import com.hyperskill.dto.PlayerDTO;
 import com.hyperskill.entity.Player;
-import com.hyperskill.mapper.PlayerMapper;
 import com.hyperskill.service.PlayerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +34,13 @@ public class PlayerController {
             return ResponseEntity.badRequest().build();
         }
 
-        Player playerToSave = PlayerMapper.toEntity(request);
-        playerService.save(playerToSave);
+        Player savedPlayer = playerService.save(request);
 
         // Create a URI for the newly created team
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(playerToSave.getId())
+                .buildAndExpand(savedPlayer.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -56,9 +53,7 @@ public class PlayerController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PlayerDTO> findById(@PathVariable Long id) {
-        Player player = playerService.findById(id);
-        PlayerDTO dto = PlayerMapper.toDTO(player);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(playerService.findDTOById(id));
     }
 
 
@@ -69,12 +64,7 @@ public class PlayerController {
      */
     @GetMapping()
     public ResponseEntity<List<PlayerDTO>> findAll() {
-        List<Player> players = playerService.findPlayers();
-        List<PlayerDTO> playerDTOS = new ArrayList<>();
-        for (Player player : players) {
-            playerDTOS.add(PlayerMapper.toDTO(player));
-        }
-        return ResponseEntity.ok(playerDTOS);
+        return ResponseEntity.ok(playerService.findDTOs());
     }
 
     /**
@@ -86,8 +76,8 @@ public class PlayerController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<PlayerDTO> update(@PathVariable Long id, @Valid @RequestBody PlayerDTO dto) {
-        Player updated = playerService.updatePlayer(id, dto.getFirstName(), dto.getLastName(), dto.getTeamName());
-        return ResponseEntity.ok(PlayerMapper.toDTO(updated));
+        PlayerDTO updated = playerService.updatePlayer(id, dto.getFirstName(), dto.getLastName(), dto.getTeamName());
+        return ResponseEntity.ok(updated);
     }
 
     /**
@@ -110,11 +100,7 @@ public class PlayerController {
      */
     @GetMapping("/team/{teamName}")
     public ResponseEntity<List<PlayerDTO>> findByTeam(@PathVariable String teamName) {
-        List<Player> players = playerService.findByTeamName(teamName);
-        List<PlayerDTO> dtos = new ArrayList<>();
-        for (Player player : players) {
-            dtos.add(PlayerMapper.toDTO(player));
-        }
+        List<PlayerDTO> dtos = playerService.findDTOsByTeamName(teamName);
         return ResponseEntity.ok(dtos);
     }
 
@@ -147,8 +133,6 @@ public class PlayerController {
     public ResponseEntity<PlayerDTO> searchByName(
             @RequestParam String firstName,
             @RequestParam(required = false) String lastName) {
-
-        Player player = playerService.searchByName(firstName, lastName);
-        return ResponseEntity.ok(PlayerMapper.toDTO(player));
+        return ResponseEntity.ok(playerService.searchDTOByName(firstName, lastName));
     }
 }
