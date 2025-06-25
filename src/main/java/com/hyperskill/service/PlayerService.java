@@ -68,9 +68,13 @@ public class PlayerService {
         return PlayerMapper.toDTO(player);
     }
 
+    public List<Player> findPlayers() {
+        return playerRepository.findAll();
+    }
+
     public List<PlayerDTO> findDTOs() {
         //TODO add pagination and sorting
-        List<Player> players = playerRepository.findAll();
+        List<Player> players = findPlayers();
         List<PlayerDTO> playerDTOS = new ArrayList<>();
         for (Player player : players) {
             playerDTOS.add(PlayerMapper.toDTO(player));
