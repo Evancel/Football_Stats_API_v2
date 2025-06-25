@@ -27,14 +27,6 @@ public class PlayerService {
 
     @Transactional
     public Player save(PlayerDTO playerDto) {
-        Optional<Player> playerAlreadyExists = playerRepository.findByFirstNameAndLastName(
-                playerDto.getFirstName(), playerDto.getLastName());
-
-        if (playerAlreadyExists.isPresent()) {
-            throw new PlayerAlreadyExistsException(
-                    "Player already exists: " + playerDto.getFirstName() + " " + playerDto.getLastName());
-        }
-
         String currTeamName = playerDto.getTeamName();
         Team team = findOrCreateTeam(currTeamName);
         Player playerToSave = PlayerMapper.toEntity(playerDto);
@@ -45,15 +37,6 @@ public class PlayerService {
 
     @Transactional
     public PlayerDTO updatePlayer(Long playerId, String firstName, String lastName, String teamName) {
-        //if the player with such firstName and lastName already exist
-        Optional<Player> playerAlreadyExists = playerRepository.findByFirstNameAndLastName(
-                firstName, lastName);
-
-        if (playerAlreadyExists.isPresent()) {
-            throw new PlayerAlreadyExistsException(
-                    "Player already exists: " + firstName + " " + lastName);
-        }
-
         //if the player with such id doesn't exist
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
