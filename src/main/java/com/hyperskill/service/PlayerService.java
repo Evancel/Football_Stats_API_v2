@@ -1,12 +1,16 @@
 package com.hyperskill.service;
 
+import com.hyperskill.dto.PlayerDTO;
 import com.hyperskill.entity.Player;
 import com.hyperskill.entity.Team;
+import com.hyperskill.exception.PlayerNotFoundException;
+import com.hyperskill.mapper.PlayerMapper;
 import com.hyperskill.repository.PlayerRepository;
 import com.hyperskill.repository.TeamRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,55 +19,84 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final TeamRepository teamRepository;
 
-    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository){
+    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository) {
         this.playerRepository = playerRepository;
         this.teamRepository = teamRepository;
     }
 
-    public Player add(Player player){
-        List<Team> teams = teamRepository.findAll();
-        if(!teams.contains(player.getTeam())){
-            //TODO add exception
-            return null;
-        }
+    @Transactional
+    public Player save(PlayerDTO playerDto) {
+        String currTeamName = playerDto.getTeamName();
+        Team team = findOrCreateTeam(currTeamName);
+        Player playerToSave = PlayerMapper.toEntity(playerDto);
+        playerToSave.setTeam(team);
 
-        playerRepository.save(player);
-        return player;
+        return playerRepository.save(playerToSave);
     }
 
-    public void addAll(List<Player> players){
-        playerRepository.saveAll(players);
+    @Transactional
+    public PlayerDTO updatePlayer(Long playerId, String firstName, String lastName, String teamName) {
+        //if the player with such id doesn't exist
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
+
+        // Update player fields
+        player.setFirstName(firstName);
+        player.setLastName(lastName);
+
+        // Find or create team
+        Team team = findOrCreateTeam(teamName);
+        player.setTeam(team);
+        player = playerRepository.save(player);
+
+        return PlayerMapper.toDTO(player);
     }
 
-    public Optional<Player> findById(Long id){
-        //TODO add exception
-        return playerRepository.findById(id);
+    public Player findById(Long id) {
+        return playerRepository.findById(id).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
     }
 
-    public Player findByFullName(String firstName, String lastName){
-        //TODO add exception
-        return playerRepository.findByFirstNameAndLastName(firstName, lastName);
+    public PlayerDTO findDTOById(Long id) {
+        Player player = findById(id);
+        return PlayerMapper.toDTO(player);
     }
 
-    public List<Player> findPlayers(){
+    public PlayerDTO searchDTOByName(String firstName, String lastName) {
+        Player player = playerRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
+
+        return PlayerMapper.toDTO(player);
+    }
+
+    public List<PlayerDTO> findDTOs() {
         //TODO add pagination and sorting
-        return playerRepository.findAll();
-    }
-/*
-    public Collection<Player> findPlayersByTeam(Team team){
-        return team.getPlayers();
-    }
-
- */
-
-    public Player deleteById(Long id){
-        if(!playerRepository.existsById(id)){
-            //TODO add exception
-            return null;
+        List<Player> players = playerRepository.findAll();
+        List<PlayerDTO> playerDTOS = new ArrayList<>();
+        for (Player player : players) {
+            playerDTOS.add(PlayerMapper.toDTO(player));
         }
+        return playerDTOS;
+    }
 
-        Optional<Player> player = playerRepository.findById(id);
+    public void deleteById(Long id) {
+        if (!playerRepository.existsById(id)) {
+            throw new PlayerNotFoundException("Player with id: " + id + " not found");
+        }
         playerRepository.deleteById(id);
-        return player.get();
+    }
+
+    public List<PlayerDTO> findDTOsByTeamName(String teamName) {
+        List<Player> players = playerRepository.findByTeam_Name(teamName);
+        List<PlayerDTO> dtos = new ArrayList<>();
+        for (Player player : players) {
+            dtos.add(PlayerMapper.toDTO(player));
+        }
+        return dtos;
+    }
+
+    private Team findOrCreateTeam(String teamName) {
+        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
+        return optionalTeam.orElseGet(() ->
+                teamRepository.save(new Team(teamName)));
     }
 }

@@ -61,6 +61,14 @@ public class Team {
     public int getGoalScored() {
         return this.goalScored;
     }
+
+    public Collection<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(Collection<Player> players) {
+        this.players = new HashSet<>(players);
+    }
 /*
     public void addGoals(int goalScored) {
         this.goalScored += goalScored;
@@ -86,10 +94,6 @@ public class Team {
 
     public Player getPlayer(String firstName, String lastname) {
         return FootballStatisticsDB.getPlayerByName(firstName, lastname);
-    }
-
-    public Collection<Player> getPlayers() {
-        return players;
     }
 
     public void replaceAllPlayers(Set<Player> playersTeam) {

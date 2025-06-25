@@ -26,7 +26,8 @@ public class Player extends Person {
     private int goals;
     private int playedMatches;
 
-    public Player() {}
+    public Player() {
+    }
 
     //deprecated
     public Player(String firstName, String lastName, String teamName) {
