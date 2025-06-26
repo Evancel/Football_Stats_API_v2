@@ -96,7 +96,9 @@ public class PlayerService {
 
     private Team findOrCreateTeam(String teamName) {
         Optional<Team> optionalTeam = teamRepository.findByName(teamName);
+        Team team = new Team();
+        team.setName(teamName);
         return optionalTeam.orElseGet(() ->
-                teamRepository.save(new Team(teamName)));
+                teamRepository.save(team));
     }
 }

@@ -14,6 +14,8 @@ public class PlayerMapper {
     }
 
     public static Player toEntity(PlayerDTO dto) {
-        return new Player(dto.getFirstName(), dto.getLastName(), new Team(dto.getTeamName()));
+        Team team = new Team();
+        team.setName(dto.getTeamName());
+        return new Player(dto.getFirstName(), dto.getLastName(), team);
     }
 }

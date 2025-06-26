@@ -18,30 +18,24 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+    
     private String name;
+    
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Player> players = new ArrayList<>();
 
-    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL)
     private Coach coach;
 
-    // This is a transient field that will be populated programmatically
-    // It includes both matches where the team is homeTeam and awayTeam
-    @Transient
-    private Set<Match> allMatches = new HashSet<>();
+    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.LAZY)
+    private Set<Match> homeMatches = new HashSet<>();
+
+    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.LAZY)
+    private Set<Match> awayMatches = new HashSet<>();
+    
     private int goalScored;
 
     public Team() {}
-
-    public Team(String name) {
-        this.name = name;
-    }
-
-    public Team(String name, Coach coach, List<Player> playersTeam) {
-        this.name = name;
-        this.coach = coach;
-        this.players = playersTeam;
-    }
 
     public Long getId() {
         return id;
@@ -62,7 +56,6 @@ public class Team {
         this.id = id;
     }
 
-
     public Coach getCoach() {
         return coach;
     }
@@ -71,12 +64,20 @@ public class Team {
         this.coach = coach;
     }
 
-    public Set<Match> getAllMatches() {
-        return allMatches;
+    public Set<Match> getHomeMatches() {
+        return homeMatches;
     }
 
-    public void setAllMatches(Set<Match> allMatches) {
-        this.allMatches = allMatches;
+    public void setHomeMatches(Set<Match> homeMatches) {
+        this.homeMatches = homeMatches;
+    }
+
+    public Set<Match> getAwayMatches() {
+        return awayMatches;
+    }
+
+    public void setAwayMatches(Set<Match> awayMatches) {
+        this.awayMatches = awayMatches;
     }
 
     public int getGoalScored() {
@@ -93,5 +94,27 @@ public class Team {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return Objects.equals(id, team.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", goalScored=" + goalScored +
+                '}';
     }
 }

@@ -22,11 +22,12 @@ public class TeamService {
     /**
      * Create a new team
      */
-    public TeamRequestDTO createTeam(TeamRequestDTO teamRequestDTO) {
+    public TeamResponseDTO createTeam(TeamRequestDTO teamRequestDTO) {
         if (teamRepository.existsByName(teamRequestDTO.getName())) {
             throw new TeamAlreadyExistsException("A team with same name already exists: " + teamRequestDTO.getName());
         }
-        return teamRepository.save(new Team(teamRequestDTO.getName()));
+        Team team = teamRepository.save(TeamMapper.toModel(teamRequestDTO));
+        return TeamMapper.toDTO(team);
     }
 
     /**
@@ -41,7 +42,22 @@ public class TeamService {
      * Get a team by ID
      */
     public TeamResponseDTO getTeamById(Long id) {
-        return teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException("Team with id: " + id + " not found"));
+        Team team = teamRepository.findById(id)
+            .orElseThrow(() -> new TeamNotFoundException("Team with id: " + id + " not found"));
+        return TeamMapper.toDTO(team);
+    }
+
+    /**
+     * Get a team by name
+     *
+     * @param name the name of the team to search for
+     * @return TeamResponseDTO containing team information
+     * @throws TeamNotFoundException if team with given name is not found
+     */
+    public TeamResponseDTO getTeamByName(String name) {
+        Team team = teamRepository.findByName(name)
+            .orElseThrow(() -> new TeamNotFoundException("Team with name: " + name + " not found"));
+        return TeamMapper.toDTO(team);   
     }
 
     /**
@@ -53,7 +69,8 @@ public class TeamService {
             throw new TeamAlreadyExistsException("A team with same name already exists: " + teamRequestDTO.getName());
         }
         team.setName(teamRequestDTO.getName());
-        return teamRepository.save(team);
+        Team teamUpdated = teamRepository.save(team);
+        return TeamMapper.toDTO(teamUpdated);
     }
 
     /**
