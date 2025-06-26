@@ -74,12 +74,7 @@ public class PlayerService {
 
     public List<PlayerDTO> findDTOs() {
         //TODO add pagination and sorting
-        List<Player> players = findPlayers();
-        List<PlayerDTO> playerDTOS = new ArrayList<>();
-        for (Player player : players) {
-            playerDTOS.add(PlayerMapper.toDTO(player));
-        }
-        return playerDTOS;
+        return PlayerMapper.listToDTO(findPlayers());
     }
 
     public void deleteById(Long id) {

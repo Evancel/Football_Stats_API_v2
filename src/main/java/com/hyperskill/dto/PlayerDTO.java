@@ -16,6 +16,9 @@ public class PlayerDTO {
     @Size(min = 3, max = 100)
     private String teamName;
 
+    private int goals;
+    private int playedMatches;
+
     public PlayerDTO() {
     }
 
@@ -41,5 +44,21 @@ public class PlayerDTO {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public int getGoals() {
+        return goals;
+    }
+
+    public void setGoals(int goals) {
+        this.goals = goals;
+    }
+
+    public int getPlayedMatches() {
+        return playedMatches;
+    }
+
+    public void setPlayedMatches(int playedMatches) {
+        this.playedMatches = playedMatches;
     }
 }
