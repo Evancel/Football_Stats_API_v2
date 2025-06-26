@@ -9,11 +9,7 @@ import com.hyperskill.entity.Team;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerStatistics {
-
-    public List<Player> getAllPlayers() {
-        return new ArrayList<>(FootballStatisticsDB.getPlayers());
-    }
+public class PlayerStatisticsOLD {
 
     public List<Player> getTopPlayersByGoalsScored(int n) {
         var players = getAllPlayers();
