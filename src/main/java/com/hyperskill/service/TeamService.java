@@ -1,9 +1,11 @@
 package com.hyperskill.service;
 
 import com.hyperskill.dto.TeamRequestDTO;
+import com.hyperskill.dto.TeamResponseDTO;
 import com.hyperskill.entity.Team;
 import com.hyperskill.exception.TeamAlreadyExistsException;
 import com.hyperskill.exception.TeamNotFoundException;
+import com.hyperskill.mapper.TeamMapper;
 import com.hyperskill.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,37 +22,55 @@ public class TeamService {
     /**
      * Create a new team
      */
-    public Team createTeam(TeamRequestDTO teamRequestDTO) {
+    public TeamResponseDTO createTeam(TeamRequestDTO teamRequestDTO) {
         if (teamRepository.existsByName(teamRequestDTO.getName())) {
             throw new TeamAlreadyExistsException("A team with same name already exists: " + teamRequestDTO.getName());
         }
-        return teamRepository.save(new Team(teamRequestDTO.getName()));
+        Team team = teamRepository.save(TeamMapper.toModel(teamRequestDTO));
+        return TeamMapper.toDTO(team);
     }
 
     /**
      * Get a team by ID
      */
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
+    public List<TeamResponseDTO> getAllTeams() {
+        List<Team> teams = teamRepository.findAll();
+        return teams.stream().map(TeamMapper::toDTO).toList();
     }
 
     /**
      * Get a team by ID
      */
-    public Team getTeamById(Long id) {
-        return teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException("Team with id: " + id + " not found"));
+    public TeamResponseDTO getTeamById(Long id) {
+        Team team = teamRepository.findById(id)
+            .orElseThrow(() -> new TeamNotFoundException("Team with id: " + id + " not found"));
+        return TeamMapper.toDTO(team);
+    }
+
+    /**
+     * Get a team by name
+     *
+     * @param name the name of the team to search for
+     * @return TeamResponseDTO containing team information
+     * @throws TeamNotFoundException if team with given name is not found
+     */
+    public TeamResponseDTO getTeamByName(String name) {
+        Team team = teamRepository.findByName(name)
+            .orElseThrow(() -> new TeamNotFoundException("Team with name: " + name + " not found"));
+        return TeamMapper.toDTO(team);   
     }
 
     /**
      * Update a team
      */
-    public Team updateTeam(Long id, TeamRequestDTO teamRequestDTO) {
+    public TeamResponseDTO updateTeam(Long id, TeamRequestDTO teamRequestDTO) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException("Team with id: " + id + " not found"));
         if (teamRepository.existsByNameAndIdNot(teamRequestDTO.getName(), id)) {
             throw new TeamAlreadyExistsException("A team with same name already exists: " + teamRequestDTO.getName());
         }
         team.setName(teamRequestDTO.getName());
-        return teamRepository.save(team);
+        Team teamUpdated = teamRepository.save(team);
+        return TeamMapper.toDTO(teamUpdated);
     }
 
     /**

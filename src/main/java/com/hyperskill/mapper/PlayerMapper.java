@@ -17,17 +17,20 @@ public class PlayerMapper {
     }
 
     public static Player toEntity(PlayerDTO dto) {
-        return new Player(dto.getFirstName(), dto.getLastName(), new Team(dto.getTeamName()));
+        Team team = new Team();
+        team.setName(dto.getTeamName());
+
+        Player player = new Player();
+        player.setFirstName(dto.getFirstName());
+        player.setLastName(dto.getLastName());
+        player.setTeam(team);
+        return player;
     }
 
     public static List<PlayerDTO> listToDTO(List<Player> players) {
         List<PlayerDTO> playerDTOS = new ArrayList<>();
-        for(Player player: players){
-            PlayerDTO dto = new PlayerDTO();
-            dto.setFirstName(player.getFirstName());
-            dto.setLastName(player.getLastName());
-            dto.setTeamName(player.getTeam().getName());
-            playerDTOS.add(dto);
+        for (Player player : players) {
+            playerDTOS.add(toDTO(player));
         }
 
         return playerDTOS;
@@ -35,8 +38,8 @@ public class PlayerMapper {
 
     public static List<Player> toEntity(List<PlayerDTO> playerDTOs) {
         List<Player> players = new ArrayList<>();
-        for(PlayerDTO dto:playerDTOs){
-            players.add(new Player(dto.getFirstName(), dto.getLastName(), new Team(dto.getTeamName())));
+        for (PlayerDTO dto : playerDTOs) {
+            players.add(toEntity(dto));
         }
         return players;
     }

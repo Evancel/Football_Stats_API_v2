@@ -1,7 +1,7 @@
 package com.hyperskill.controller;
 
 import com.hyperskill.dto.TeamRequestDTO;
-import com.hyperskill.entity.Team;
+import com.hyperskill.dto.TeamResponseDTO;
 import com.hyperskill.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class TeamController {
      * @return ResponseEntity containing a list of all teams with HTTP status 200 (OK)
      */
     @GetMapping
-    public ResponseEntity<List<Team>> getAllTeams() {
+    public ResponseEntity<List<TeamResponseDTO>> getAllTeams() {
         return ResponseEntity.ok(teamService.getAllTeams());
     }
 
@@ -38,7 +38,7 @@ public class TeamController {
      * @return ResponseEntity containing the requested team with HTTP status 200 (OK)
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable Long id) {
+    public ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable Long id) {
         return ResponseEntity.ok(teamService.getTeamById(id));
     }
 
@@ -50,13 +50,13 @@ public class TeamController {
      */
     @PostMapping
     public ResponseEntity<Void> createTeam(@Valid @RequestBody TeamRequestDTO teamRequestDTO) {
-        Team team = teamService.createTeam(teamRequestDTO);
+        TeamResponseDTO teamResponseDTO = teamService.createTeam(teamRequestDTO);
 
         // Create a URI for the newly created team
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(team.getId())
+                .buildAndExpand(teamResponseDTO.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -81,8 +81,19 @@ public class TeamController {
      * @return ResponseEntity containing the updated team with HTTP status 200 (OK)
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamRequestDTO teamRequestDTO) {
-        Team team = teamService.updateTeam(id, teamRequestDTO);
-        return ResponseEntity.ok(team);
+    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamRequestDTO teamRequestDTO) {
+        TeamResponseDTO teamResponseDTO = teamService.updateTeam(id, teamRequestDTO);
+        return ResponseEntity.ok(teamResponseDTO);
+    }
+
+    /**
+     * Retrieves a specific team by its name using a query parameter.
+     *
+     * @param name the name of the team to retrieve
+     * @return ResponseEntity containing the requested team with HTTP status 200 (OK)
+     */
+    @GetMapping("/search")
+    public ResponseEntity<TeamResponseDTO> searchTeamByName(@RequestParam String name) {
+        return ResponseEntity.ok(teamService.getTeamByName(name));
     }
 }
