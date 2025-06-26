@@ -18,6 +18,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     Optional<Match> findMatchWithSpecificScore(int homeScore, int awayScore);
     Optional<Match> findMatchWithSpecificHomeScore(int homeScore);
     Optional<Match> findMatchWithSpecificAwayScore(int awayScore);
+    Optional<Match> findMatchByDraw();
     Optional<Match> findRecentMatch(LocalDateTime startDate);
 
 
