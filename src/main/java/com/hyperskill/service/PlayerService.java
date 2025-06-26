@@ -85,15 +85,6 @@ public class PlayerService {
         playerRepository.deleteById(id);
     }
 
-    public List<PlayerDTO> findDTOsByTeamName(String teamName) {
-        List<Player> players = playerRepository.findByTeam_Name(teamName);
-        List<PlayerDTO> dtos = new ArrayList<>();
-        for (Player player : players) {
-            dtos.add(PlayerMapper.toDTO(player));
-        }
-        return dtos;
-    }
-
     private Team findOrCreateTeam(String teamName) {
         Optional<Team> optionalTeam = teamRepository.findByName(teamName);
         Team team = new Team();
