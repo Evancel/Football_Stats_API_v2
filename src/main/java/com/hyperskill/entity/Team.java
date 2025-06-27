@@ -18,30 +18,24 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+    
     private String name;
+    
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Player> players = new HashSet<>();
+    private List<Player> players = new ArrayList<>();
 
-    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL)
     private Coach coach;
 
-    // This is a transient field that will be populated programmatically
-    // It includes both matches where the team is homeTeam and awayTeam
-    @Transient
-    private Set<Match> allMatches = new HashSet<>();
+    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.LAZY)
+    private Set<Match> homeMatches = new HashSet<>();
+
+    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.LAZY)
+    private Set<Match> awayMatches = new HashSet<>();
+    
     private int goalScored;
 
     public Team() {}
-
-    public Team(String name) {
-        this.name = name;
-    }
-
-    public Team(String name, Coach coach, Set<Player> playersTeam) {
-        this.name = name;
-        this.coach = coach;
-        this.players = playersTeam;
-    }
 
     public Long getId() {
         return id;
@@ -58,60 +52,8 @@ public class Team {
         this.name = name;
     }
 
-    public int getGoalScored() {
-        return this.goalScored;
-    }
-
-    public Collection<Player> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(Collection<Player> players) {
-        this.players = new HashSet<>(players);
-    }
-/*
-    public void addGoals(int goalScored) {
-        this.goalScored += goalScored;
-    }
-
-    public void addPlayer(Player player) {
-        if (!validatePlayersTeam(new HashSet<>(Set.of(player)), name)) {
-            System.out.println("Error. The player doesn't play for this team.");
-            return;
-        }
-
-        this.players.add(player);
-    }
-
-    public void addPlayers(Set<Player> playersTeam) {
-        if (!validatePlayersTeam(playersTeam, name)) {
-            System.out.println("Error. Not all players play for this team.");
-            return;
-        }
-
-        this.players.addAll(playersTeam);
-    }
-
-    public Player getPlayer(String firstName, String lastname) {
-        return FootballStatisticsDB.getPlayerByName(firstName, lastname);
-    }
-
-    public void replaceAllPlayers(Set<Player> playersTeam) {
-        if (!validatePlayersTeam(playersTeam, name)) {
-            System.out.println("Error. Not all players play for that team.");
-            return;
-        }
-
-        this.players.clear();
-        this.players.addAll(playersTeam);
-    }
-
-    public void deletePlayer(Player player) {
-        this.players.remove(player);
-    }
-
-    public void deletePlayers(Set<Player> playersTeam) {
-        this.players.removeAll(playersTeam);
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Coach getCoach() {
@@ -119,119 +61,39 @@ public class Team {
     }
 
     public void setCoach(Coach coach) {
-        if (!validateCoachTeam(coach, name)) {
-            System.out.println("Error. Coach doesn't play for this team.");
-            return;
-        }
-
         this.coach = coach;
     }
 
-    public void deleteCoach(Coach coach) {
-        if (!this.coach.equals(coach)) {
-            System.out.println("Error. The coach doesn't belong to this team.");
-            return;
-        }
-        this.coach = null;
+    public Set<Match> getHomeMatches() {
+        return homeMatches;
     }
 
-    public void addMatch(Match match) {
-        allMatches.add(match);
+    public void setHomeMatches(Set<Match> homeMatches) {
+        this.homeMatches = homeMatches;
     }
 
-    public void addMatches(Collection<Match> matches) {
-        allMatches.addAll(matches);
+    public Set<Match> getAwayMatches() {
+        return awayMatches;
     }
 
-    public Collection<Match> getAllMatches() {
-        return allMatches;
+    public void setAwayMatches(Set<Match> awayMatches) {
+        this.awayMatches = awayMatches;
     }
 
-    public Collection<Match> getWinMatches() {
-        Set<Match> winMatches = new HashSet<>();
-        for (Match match : allMatches) {
-            if (match.getWinner() != null && match.getWinner().equals(this)) {
-                winMatches.add(match);
-            }
-        }
-        return winMatches;
+    public int getGoalScored() {
+        return goalScored;
     }
 
-    public Collection<Match> getLoseMatches() {
-        Set<Match> loseMatches = new HashSet<>();
-        for (Match match : allMatches) {
-            if (match.getLoser() != null && match.getLoser().equals(this)) {
-                loseMatches.add(match);
-            }
-        }
-        return loseMatches;
+    public void setGoalScored(int goalScored) {
+        this.goalScored = goalScored;
     }
 
-    public Collection<Match> getDrawMatches() {
-        Set<Match> drawMatches = new HashSet<>();
-        for (Match match : allMatches) {
-            if (match.isDraw()) {
-                drawMatches.add(match);
-            }
-        }
-        return drawMatches;
+    public List<Player> getPlayers() {
+        return players;
     }
 
-    public Collection<Match> getAllMatchesPerYear(int year) {
-        Set<Match> allMatchesPerYear = new HashSet<>();
-
-        for (Match match : allMatches) {
-            if (match.getMatchDate().getYear() == year) {
-                allMatchesPerYear.add(match);
-            }
-        }
-
-        return allMatchesPerYear;
-    }
-
-    public Collection<Match> getWinsMatchesPerYear(int year) {
-        Set<Match> winsMatchesPerYear = new HashSet<>();
-
-        for (Match match : getWinMatches()) {
-            if (match.getMatchDate().getYear() == year) {
-                winsMatchesPerYear.add(match);
-            }
-        }
-
-        return winsMatchesPerYear;
-    }
-
-    public Collection<Match> getLossesMatchesPerYear(int year) {
-        Set<Match> lossesMatchesPerYear = new HashSet<>();
-
-        for (Match match : getLoseMatches()) {
-            if (match.getMatchDate().getYear() == year) {
-                lossesMatchesPerYear.add(match);
-            }
-        }
-
-        return lossesMatchesPerYear;
-    }
-
-    public Collection<Match> getDrawsMatchesPerYear(int year) {
-        Set<Match> drawsMatchesPerYear = new HashSet<>();
-
-        for (Match match : getDrawMatches()) {
-            if (match.getMatchDate().getYear() == year) {
-                drawsMatchesPerYear.add(match);
-            }
-        }
-
-        return drawsMatchesPerYear;
-    }
-
-    @Override
-    public String toString() {
-        return "Team{" +
-                "name='" + name + '\'' +
-                ", players=" + players +
-                ", coach=" + coach +
-                '}';
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
     @Override
@@ -244,25 +106,15 @@ public class Team {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id);
     }
 
-    private boolean validatePlayersTeam(Set<Player> playersTeam, String teamName) {
-        for (Player player : playersTeam) {
-            if (!player.getTeam().getName().equalsIgnoreCase(teamName)) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public String toString() {
+        return "Team{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", goalScored=" + goalScored +
+                '}';
     }
-
-    private boolean validateCoachTeam(Coach coach, String teamName) {
-        // Check if coach is null before calling getTeamName()
-        if (coach == null) {
-            return false;
-        }
-        return coach.getTeamName().equalsIgnoreCase(teamName);
-    }
-
- */
 }
