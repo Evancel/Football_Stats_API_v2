@@ -6,7 +6,7 @@ import java.util.Set;
 public class TeamResponseDTO {
     private Long id;
     private String name;
-    private List<PlayerDTO> players;
+    private List<PlayerResponseDTO> players;
     private CoachDTO coach;
     private int goalScored;
     private Set<MatchDTO> matches;
@@ -35,11 +35,11 @@ public class TeamResponseDTO {
         this.goalScored = goalScored;
     }
 
-    public List<PlayerDTO> getPlayers() {
+    public List<PlayerResponseDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<PlayerDTO> players) {
+    public void setPlayers(List<PlayerResponseDTO> players) {
         this.players = players;
     }
 

@@ -98,6 +98,14 @@ public class Match {
         }
         return homeScore < awayScore ? homeTeam : awayTeam;
     }
+
+    public List<Goal> getGoals() {
+        return goals;
+    }
+
+    public void setGoals(List<Goal> goals) {
+        this.goals = goals;
+    }
 /*
     public void updateStats() {
         // Update team statistics
@@ -173,14 +181,6 @@ public class Match {
         return summary.toString();
     }
 
-    // Getters and setters
-    public List<Goal> getGoals() {
-        return goals;
-    }
-
-    public void setGoals(List<Goal> goals) {
-        this.goals = goals;
-    }
 
     // Helper method to add a goal
     public void addGoal(Goal goal) {
