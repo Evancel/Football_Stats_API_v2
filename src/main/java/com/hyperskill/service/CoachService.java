@@ -1,10 +1,10 @@
 package com.hyperskill.service;
 
-import com.hyperskill.dto.CoachDTO;
-import com.hyperskill.entity.Coach;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.CoachDTO;
+import com.hyperskill.model.entity.Coach;
+import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.CoachNotFoundException;
-import com.hyperskill.mapper.CoachMapper;
+import com.hyperskill.model.mapper.CoachMapper;
 import com.hyperskill.repository.CoachRepository;
 import com.hyperskill.repository.GoalRepository;
 import com.hyperskill.repository.TeamRepository;

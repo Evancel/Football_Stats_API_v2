@@ -1,6 +1,9 @@
 package com.hyperskill.controller;
 
-import com.hyperskill.dto.*;
+import com.hyperskill.model.dto.PlayerAvgGoalsResponse;
+import com.hyperskill.model.dto.PlayerGoalsResponse;
+import com.hyperskill.model.dto.PlayerMatchesResponce;
+import com.hyperskill.model.dto.PlayerResponseDTO;
 import com.hyperskill.service.PlayerService;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;

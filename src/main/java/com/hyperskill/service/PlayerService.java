@@ -1,14 +1,13 @@
 package com.hyperskill.service;
 
-import com.hyperskill.dto.*;
-import com.hyperskill.entity.Player;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.*;
+import com.hyperskill.model.entity.Player;
+import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.PlayerNotFoundException;
 import com.hyperskill.exception.TeamNotFoundException;
-import com.hyperskill.mapper.PlayerMapper;
+import com.hyperskill.model.mapper.PlayerMapper;
 import com.hyperskill.repository.PlayerRepository;
 import com.hyperskill.repository.TeamRepository;
-import com.hyperskill.statistics.PlayerStatisticsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

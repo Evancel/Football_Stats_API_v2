@@ -1,8 +1,8 @@
-package com.hyperskill.mapper;
+package com.hyperskill.model.mapper;
 
-import com.hyperskill.dto.MatchDTO;
-import com.hyperskill.entity.Match;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.MatchDTO;
+import com.hyperskill.model.entity.Match;
+import com.hyperskill.model.entity.Team;
 
 import java.util.List;
 import java.util.stream.Collectors;

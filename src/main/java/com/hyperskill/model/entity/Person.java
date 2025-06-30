@@ -1,4 +1,4 @@
-package com.hyperskill.entity;
+package com.hyperskill.model.entity;
 
 import jakarta.persistence.MappedSuperclass;
 

@@ -1,6 +1,6 @@
 package com.hyperskill.repository;
 
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

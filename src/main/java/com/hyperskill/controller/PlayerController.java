@@ -1,8 +1,8 @@
 package com.hyperskill.controller;
 
-import com.hyperskill.dto.PlayerRequestDTO;
-import com.hyperskill.dto.PlayerResponseDTO;
-import com.hyperskill.entity.Player;
+import com.hyperskill.model.dto.PlayerRequestDTO;
+import com.hyperskill.model.dto.PlayerResponseDTO;
+import com.hyperskill.model.entity.Player;
 import com.hyperskill.service.PlayerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

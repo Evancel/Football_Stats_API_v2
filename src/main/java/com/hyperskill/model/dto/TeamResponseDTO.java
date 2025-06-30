@@ -1,4 +1,4 @@
-package com.hyperskill.dto;
+package com.hyperskill.model.dto;
 
 import java.util.List;
 import java.util.Set;

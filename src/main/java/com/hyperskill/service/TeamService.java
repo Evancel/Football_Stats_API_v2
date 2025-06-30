@@ -1,11 +1,11 @@
 package com.hyperskill.service;
 
-import com.hyperskill.dto.TeamRequestDTO;
-import com.hyperskill.dto.TeamResponseDTO;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.TeamRequestDTO;
+import com.hyperskill.model.dto.TeamResponseDTO;
+import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.TeamAlreadyExistsException;
 import com.hyperskill.exception.TeamNotFoundException;
-import com.hyperskill.mapper.TeamMapper;
+import com.hyperskill.model.mapper.TeamMapper;
 import com.hyperskill.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,25 +1,19 @@
-package com.hyperskill.dto;
+package com.hyperskill.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
-public class CoachDTO {
-    @NotBlank(message = "First name is required")
-    @Size(min = 2, max = 30)
+public class PlayerResponseDTO {
+    private Long id;
     private String firstName;
-
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 30)
     private String lastName;
-
-    @NotBlank(message = "Team name is required")
-    @Size(min = 3, max = 100)
     private String teamName;
-
+    private int goals;
     private int playedMatches;
 
+    public Long getId() {
+        return id;
+    }
 
-    public CoachDTO() {
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -46,6 +40,14 @@ public class CoachDTO {
         this.teamName = teamName;
     }
 
+    public int getGoals() {
+        return goals;
+    }
+
+    public void setGoals(int goals) {
+        this.goals = goals;
+    }
+
     public int getPlayedMatches() {
         return playedMatches;
     }
@@ -53,5 +55,4 @@ public class CoachDTO {
     public void setPlayedMatches(int playedMatches) {
         this.playedMatches = playedMatches;
     }
-
 }

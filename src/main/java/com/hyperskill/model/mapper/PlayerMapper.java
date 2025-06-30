@@ -1,9 +1,9 @@
-package com.hyperskill.mapper;
+package com.hyperskill.model.mapper;
 
-import com.hyperskill.dto.PlayerRequestDTO;
-import com.hyperskill.dto.PlayerResponseDTO;
-import com.hyperskill.entity.Player;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.PlayerRequestDTO;
+import com.hyperskill.model.dto.PlayerResponseDTO;
+import com.hyperskill.model.entity.Player;
+import com.hyperskill.model.entity.Team;
 
 public class PlayerMapper {
     public static PlayerResponseDTO toDTO(Player player) {
