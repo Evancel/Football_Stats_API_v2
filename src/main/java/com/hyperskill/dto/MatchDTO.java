@@ -1,11 +1,15 @@
 package com.hyperskill.dto;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 public class MatchDTO {
     private Long id;
     private String homeTeamName;
     private String awayTeamName;
     private int homeTeamScore;
     private int awayTeamScore;
+    private LocalDateTime matchDate;
 
     public MatchDTO() {
     }
@@ -49,4 +53,14 @@ public class MatchDTO {
     public void setAwayTeamName(String awayTeamName) {
         this.awayTeamName = awayTeamName;
     }
+
+    public LocalDateTime getMatchDate() {
+        return matchDate;
+    }
+
+    public void setMatchDate(LocalDateTime matchDate){
+        this.matchDate = matchDate;
+    }
+
+
 }

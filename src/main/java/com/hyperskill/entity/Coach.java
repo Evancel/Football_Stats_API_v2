@@ -31,13 +31,6 @@ public class Coach extends Person {
         this.team = team;
     }
 
-    // Constructor for backward compatibility
-    public Coach(String firstName, String lastName, String teamName) {
-        super(firstName, lastName);
-        // This constructor is kept for backward compatibility
-        // The team will be set later using setTeam method
-    }
-
     public Long getId() {
         return id;
     }
@@ -46,25 +39,19 @@ public class Coach extends Person {
         return team;
     }
 
-    public String getTeamName() {
-        return team != null ? team.getName() : null;
-    }
-
-    public int getPlayedMatches() {
-        return playedMatches;
-    }
 
     public void setTeam(Team team) {
+        // Remove from old team
+        if (this.team != null) {
+            this.team.setCoach(null);
+        }
+
         this.team = team;
-    }
 
-    public void setTeamName(String teamName) {
-        // This method is kept for backward compatibility
-        // It doesn't do anything as we now use Team object
-    }
-
-    public void incrementMatchesPlayed() {
-        this.playedMatches++;
+        // Add to new team
+        if (team != null) {
+            team.setCoach(this);
+        }
     }
 
     @Override
