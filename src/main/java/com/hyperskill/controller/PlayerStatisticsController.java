@@ -36,35 +36,23 @@ public class PlayerStatisticsController {
     @GetMapping("/{id}/goals-per-year")
     public ResponseEntity<PlayerGoalsResponse> getScoredGoalsPerYear(@PathVariable Long id,
                                                                      @RequestParam(required = false) Integer year) {
-        if (id == null) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(playerService.getScoredGoalsPerYear(id, year));
     }
 
     @GetMapping("/{id}/matches-per-year")
     public ResponseEntity<PlayerMatchesResponce> getMatchesPerYear(@PathVariable Long id,
                                                                    @RequestParam(required = false) Integer year) {
-        if (id == null) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(playerService.getMatchesPerYear(id, year));
     }
 
     @GetMapping("/{id}/avg-goals-total")
     public ResponseEntity<PlayerAvgGoalsResponse> getAverageScoredGoals(@PathVariable Long id) {
-        if (id == null) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(playerService.getAverageScoredGoals(id));
     }
 
     @GetMapping("/{id}/avg-goals-per-year")
     public ResponseEntity<PlayerAvgGoalsResponse> getAverageScoredGoalsPerYear(@PathVariable Long id,
                                                                                @RequestParam(required = false) Integer year) {
-        if (id == null) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(playerService.getAverageScoredGoalsPerYear(id, year));
     }
 }
