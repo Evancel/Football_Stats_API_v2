@@ -32,6 +32,11 @@ public class PlayerMatchController {
         return ResponseEntity.ok(playerMatchService.getById(id));
     }
 
+    @GetMapping
+    public ResponseEntity<List<PlayerMatchResponseDTO>> getAll() {
+        return ResponseEntity.ok(playerMatchService.getAll());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PlayerMatchResponseDTO> update(@PathVariable Long id,
                                                  @RequestBody @Valid PlayerMatchRequestDTO requestDTO) {

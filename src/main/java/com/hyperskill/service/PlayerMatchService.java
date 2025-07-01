@@ -56,6 +56,13 @@ public class PlayerMatchService {
         return PlayerMatchMapper.toDTO(pm);
     }
 
+    public List<PlayerMatchResponseDTO> getAll() {
+        return playerMatchRepository
+                .findAll()
+                .stream().map(PlayerMatchMapper::toDTO)
+                .toList();
+    }
+
     public PlayerMatchResponseDTO update(Long id, PlayerMatchRequestDTO dto) {
         PlayerMatch pm = playerMatchRepository.findById(id)
                 .orElseThrow(() -> new PlayerMatchNotFoundException("PlayerMatch not found"));
