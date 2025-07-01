@@ -13,6 +13,7 @@ public class PlayerMapper {
         dto.setLastName(player.getLastName());
         dto.setTeamName(player.getTeam().getName());
         dto.setGoals(player.getGoals().size());
+        dto.setPlayerMatches(player.getPlayerMatches().size());
         return dto;
     }
 

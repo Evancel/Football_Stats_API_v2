@@ -46,4 +46,12 @@ public class GlobalExceptionHandler {
         error.put("message", "Player not found");
         return ResponseEntity.badRequest().body(error);
     }
+
+    @ExceptionHandler(PlayerMatchNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handlePlayerMatchNotFoundException(PlayerMatchNotFoundException ex) {
+        log.warn("PlayerMatch not found: {}", ex.getMessage());
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "PlayerMatch not found");
+        return ResponseEntity.badRequest().body(error);
+    }
 }

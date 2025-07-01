@@ -36,7 +36,7 @@ public class PlayerStatisticsService {
     }
 
     public Page<PlayerResponseDTO> getTopPlayersByMatches(int page, int size) {
-        Pageable sorted = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "playedMatches"));
+        Pageable sorted = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "playerMatches"));
         return playerRepository.findAll(sorted).map(PlayerMapper::toDTO);
     }
 
@@ -93,12 +93,11 @@ public class PlayerStatisticsService {
         return new PlayerMatchesResponce(id, year, amountPlayedMatches);
     }
 
-
     public PlayerAvgGoalsResponse getAverageScoredGoals(Long id) {
         Player player = playerRepository
                 .findById(id)
                 .orElseThrow(() -> new PlayerNotFoundException("Player with id: " + id + " not found"));
-        int matches = player.getPlayedMatches();
+        int matches = player.getPlayerMatches().size();
         double avgGoals = matches == 0 ? 0.0 : (double) player.getGoals().size() / matches;
         return new PlayerAvgGoalsResponse(id, 0, avgGoals);
     }
