@@ -1,80 +1,77 @@
 package com.hyperskill.service;
 
-import com.hyperskill.dto.PlayerDTO;
-import com.hyperskill.entity.Player;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.*;
+import com.hyperskill.model.entity.Player;
+import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.PlayerNotFoundException;
-import com.hyperskill.mapper.PlayerMapper;
+import com.hyperskill.exception.TeamNotFoundException;
+import com.hyperskill.model.mapper.PlayerMapper;
 import com.hyperskill.repository.PlayerRepository;
 import com.hyperskill.repository.TeamRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final TeamRepository teamRepository;
+    private final PlayerStatisticsService playerStatisticsService;
 
-    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository) {
+    public PlayerService(PlayerRepository playerRepository,
+                         TeamRepository teamRepository,
+                         PlayerStatisticsService playerStatisticsService) {
         this.playerRepository = playerRepository;
         this.teamRepository = teamRepository;
+        this.playerStatisticsService = playerStatisticsService;
     }
 
     @Transactional
-    public Player save(PlayerDTO playerDto) {
-        String currTeamName = playerDto.getTeamName();
-        Team team = findOrCreateTeam(currTeamName);
-        Player playerToSave = PlayerMapper.toEntity(playerDto);
-        playerToSave.setTeam(team);
+    public Player save(PlayerRequestDTO request) {
+        Team team = teamRepository.findById(request.getTeamId())
+                .orElseThrow(() -> new TeamNotFoundException("Team with id: " + request.getTeamId() + " not found"));
+        Player savedPlayed = PlayerMapper.toEntity(request, team);
 
-        return playerRepository.save(playerToSave);
+        return playerRepository.save(savedPlayed);
     }
 
     @Transactional
-    public PlayerDTO updatePlayer(Long playerId, String firstName, String lastName, String teamName) {
+    public PlayerResponseDTO updatePlayer(Long playerId, PlayerRequestDTO request) {
         //if the player with such id doesn't exist
         Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
+                .orElseThrow(() -> new PlayerNotFoundException("Player with id: " + playerId + " not found"));
+
+        Team team = teamRepository.findById(request.getTeamId())
+                .orElseThrow(() -> new TeamNotFoundException("Team with id: " + request.getTeamId() + " not found"));
 
         // Update player fields
-        player.setFirstName(firstName);
-        player.setLastName(lastName);
-
-        // Find or create team
-        Team team = findOrCreateTeam(teamName);
+        player.setFirstName(request.getFirstName());
+        player.setLastName(request.getLastName());
         player.setTeam(team);
         player = playerRepository.save(player);
 
         return PlayerMapper.toDTO(player);
     }
 
-    public Player findById(Long id) {
-        return playerRepository.findById(id).orElseThrow(() -> new PlayerNotFoundException("Player not found"));
-    }
-
-    public PlayerDTO findDTOById(Long id) {
-        Player player = findById(id);
+    public PlayerResponseDTO findById(Long id) {
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new PlayerNotFoundException("Player with id: " + id + " not found"));
         return PlayerMapper.toDTO(player);
     }
 
-    public PlayerDTO searchDTOByName(String firstName, String lastName) {
+    public PlayerResponseDTO searchDTOByName(String firstName, String lastName) {
         Player player = playerRepository.findByFirstNameAndLastName(firstName, lastName)
                 .orElseThrow(() -> new PlayerNotFoundException("Player not found"));
 
         return PlayerMapper.toDTO(player);
     }
 
-    public List<Player> findPlayers() {
-        return playerRepository.findAll();
-    }
-
-    public List<PlayerDTO> findDTOs() {
-        //TODO add pagination and sorting
-        return PlayerMapper.listToDTO(findPlayers());
+    public Page<PlayerResponseDTO> findAll(Pageable pageable) {
+        Page<Player> players = playerRepository.findAll(pageable);
+        return players.map(PlayerMapper::toDTO);
     }
 
     public void deleteById(Long id) {
@@ -90,5 +87,30 @@ public class PlayerService {
         team.setName(teamName);
         return optionalTeam.orElseGet(() ->
                 teamRepository.save(team));
+    }
+
+    //statistics
+    public Page<PlayerResponseDTO> getTopPlayersByScoredGoals(int page, int size) {
+        return playerStatisticsService.getTopPlayersByScoredGoals(page, size);
+    }
+
+    public Page<PlayerResponseDTO> getTopPlayersByMatches(int page, int size) {
+        return playerStatisticsService.getTopPlayersByMatches(page, size);
+    }
+
+    public PlayerGoalsResponse getScoredGoalsPerYear(Long id, Integer year) {
+        return playerStatisticsService.getScoredGoalsPerYear(id, year);
+    }
+
+    public PlayerMatchesResponce getMatchesPerYear(Long id, Integer year) {
+        return playerStatisticsService.getMatchesPerYear(id, year);
+    }
+
+    public PlayerAvgGoalsResponse getAverageScoredGoals(Long id) {
+        return playerStatisticsService.getAverageScoredGoals(id);
+    }
+
+    public PlayerAvgGoalsResponse getAverageScoredGoalsPerYear(Long id, Integer year) {
+        return playerStatisticsService.getAverageScoredGoalsPerYear(id, year);
     }
 }

@@ -1,7 +1,7 @@
 package com.hyperskill.controller;
 
-import com.hyperskill.dto.TeamRequestDTO;
-import com.hyperskill.dto.TeamResponseDTO;
+import com.hyperskill.model.dto.TeamRequestDTO;
+import com.hyperskill.model.dto.TeamResponseDTO;
 import com.hyperskill.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

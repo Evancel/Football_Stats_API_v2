@@ -1,4 +1,4 @@
-package com.hyperskill.dto;
+package com.hyperskill.model.dto;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

@@ -1,8 +1,8 @@
 
-package com.hyperskill.mapper;
+package com.hyperskill.model.mapper;
 
-import com.hyperskill.dto.CoachDTO;
-import com.hyperskill.entity.Coach;
+import com.hyperskill.model.dto.CoachDTO;
+import com.hyperskill.model.entity.Coach;
 
 import java.util.Collections;
 import java.util.List;

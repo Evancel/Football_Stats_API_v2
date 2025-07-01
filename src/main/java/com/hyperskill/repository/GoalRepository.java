@@ -1,8 +1,8 @@
 package com.hyperskill.repository;
 
-import com.hyperskill.entity.Goal;
-import com.hyperskill.entity.Match;
-import com.hyperskill.entity.Player;
+import com.hyperskill.model.entity.Goal;
+import com.hyperskill.model.entity.Match;
+import com.hyperskill.model.entity.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,11 +1,11 @@
-package com.hyperskill.mapper;
+package com.hyperskill.model.mapper;
 
-import com.hyperskill.dto.CoachDTO;
-import com.hyperskill.dto.PlayerDTO;
-import com.hyperskill.dto.TeamRequestDTO;
-import com.hyperskill.dto.TeamResponseDTO;
-import com.hyperskill.entity.Match;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.CoachDTO;
+import com.hyperskill.model.dto.PlayerResponseDTO;
+import com.hyperskill.model.dto.TeamRequestDTO;
+import com.hyperskill.model.dto.TeamResponseDTO;
+import com.hyperskill.model.entity.Match;
+import com.hyperskill.model.entity.Team;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +30,7 @@ public class TeamMapper {
 
         teamDTO.setMatches(allMatches.stream().map(MatchMapper::toDTO).collect(Collectors.toSet()));
 
-        List<PlayerDTO> players = team.getPlayers().stream()
+        List<PlayerResponseDTO> players = team.getPlayers().stream()
                 .map(PlayerMapper::toDTO)
                 .toList();
 

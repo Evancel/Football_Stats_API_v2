@@ -1,11 +1,11 @@
 package com.hyperskill.service;
 
-import com.hyperskill.dto.MatchDTO;
-import com.hyperskill.entity.Goal;
-import com.hyperskill.entity.Match;
-import com.hyperskill.entity.Team;
+import com.hyperskill.model.dto.MatchDTO;
+import com.hyperskill.model.entity.Goal;
+import com.hyperskill.model.entity.Match;
+import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.MatchNotFoundException;
-import com.hyperskill.mapper.MatchMapper;
+import com.hyperskill.model.mapper.MatchMapper;
 import com.hyperskill.repository.GoalRepository;
 import com.hyperskill.repository.MatchRepository;
 import com.hyperskill.repository.TeamRepository;
