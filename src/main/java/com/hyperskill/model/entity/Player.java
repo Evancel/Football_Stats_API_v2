@@ -26,22 +26,8 @@ public class Player extends Person {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore  // Prevent circular references in JSON
     private List<Goal> goals = new ArrayList<>();
-
-    private int playedMatches;
-
-    public Player() {
-    }
-
-    public Player(String firstName, String lastName, Team team) {
-        super(firstName, lastName);
-        this.team = team;
-    }
-
-    public Player(String firstName, String lastName, Team team, List<Goal> goals) {
-        super(firstName, lastName);
-        this.team = team;
-        this.goals = goals;
-    }
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayerMatch> playerMatches = new ArrayList<>();
 
     //Getters and Setters
     public Long getId() {
@@ -72,12 +58,12 @@ public class Player extends Person {
         this.goals = goals;
     }
 
-    public int getPlayedMatches() {
-        return playedMatches;
+    public List<PlayerMatch> getPlayerMatches() {
+        return playerMatches;
     }
 
-    public void setPlayedMatches(int playedMatches) {
-        this.playedMatches = playedMatches;
+    public void setPlayerMatches(List<PlayerMatch> playerMatches) {
+        this.playerMatches = playerMatches;
     }
 
     @Override
@@ -85,7 +71,8 @@ public class Player extends Person {
         return "Player {" + "firstName = " + super.getFirstName()
                 + ", lastName = " + super.getLastName()
                 + ", team = " + team.getName()
-                + ", goals = " + goals.size() + "}";
+                + ", goals = " + goals.size()
+                + ", matches = " + playerMatches.size() + "}";
     }
 
     @Override
@@ -100,18 +87,4 @@ public class Player extends Person {
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
-    /*OLD Methods
-    public void addGoals(int goals) {
-        if (goals < 0) {
-            return;
-        }
-
-        this.goals += goals;
-    }
-
-    public void incrementMatchesPlayed() {
-        this.playedMatches++;
-    }
-     */
 }

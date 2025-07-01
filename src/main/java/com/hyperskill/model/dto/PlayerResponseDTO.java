@@ -6,7 +6,7 @@ public class PlayerResponseDTO {
     private String lastName;
     private String teamName;
     private int goals;
-    private int playedMatches;
+    private int playerMatches;
 
     public Long getId() {
         return id;
@@ -48,11 +48,11 @@ public class PlayerResponseDTO {
         this.goals = goals;
     }
 
-    public int getPlayedMatches() {
-        return playedMatches;
+    public int getPlayerMatches() {
+        return playerMatches;
     }
 
-    public void setPlayedMatches(int playedMatches) {
-        this.playedMatches = playedMatches;
+    public void setPlayerMatches(int playerMatches) {
+        this.playerMatches = playerMatches;
     }
 }

@@ -26,10 +26,13 @@ public class Match {
     private int homeScore;
     private int awayScore;
 
+    private LocalDateTime matchDate;
+
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Goal> goals = new ArrayList<>();
 
-    private LocalDateTime matchDate;
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayerMatch> playerMatches = new ArrayList<>();
 
     public Match() {}
 
@@ -106,7 +109,16 @@ public class Match {
     public void setGoals(List<Goal> goals) {
         this.goals = goals;
     }
-/*
+
+    public List<PlayerMatch> getPlayerMatches() {
+        return playerMatches;
+    }
+
+    public void setPlayerMatches(List<PlayerMatch> playerMatches) {
+        this.playerMatches = playerMatches;
+    }
+
+    /*
     public void updateStats() {
         // Update team statistics
         updateTeamStats();

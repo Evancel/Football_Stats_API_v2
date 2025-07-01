@@ -112,9 +112,9 @@ public class PlayerController {
         PlayerResponseDTO player = playerService.findById(id);
         Map<String, Object> stats = new HashMap<>();
         stats.put("goals", player.getGoals());
-        stats.put("matches", player.getPlayedMatches());
-        stats.put("goalsPerMatch", player.getPlayedMatches() > 0 ?
-                (double) player.getGoals() / player.getPlayedMatches() : 0);
+        stats.put("matches", player.getPlayerMatches());
+        stats.put("goalsPerMatch", player.getPlayerMatches() > 0 ?
+                (double) player.getGoals() / player.getPlayerMatches() : 0);
 
         return ResponseEntity.ok(stats);
     }
