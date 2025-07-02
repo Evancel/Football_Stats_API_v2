@@ -15,5 +15,4 @@ public class TeamRequestDTO {
     public void setName(String name) {
         this.name = name;
     }
-
 }

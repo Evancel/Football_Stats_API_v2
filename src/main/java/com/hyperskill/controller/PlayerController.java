@@ -5,16 +5,13 @@ import com.hyperskill.model.dto.PlayerResponseDTO;
 import com.hyperskill.model.entity.Player;
 import com.hyperskill.service.PlayerService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/players")
@@ -67,18 +64,15 @@ public class PlayerController {
      */
     @GetMapping()
     public ResponseEntity<Page<PlayerResponseDTO>> findAll(
-            @PageableDefault(size = 10, sort = {"lastName", "firstName"}) Pageable pageable) {
-        if (pageable.getPageNumber() < 0 || pageable.getPageSize() < 1) {
-            throw new IllegalArgumentException("Invalid pagination parameters.");
-        }
-
-        return ResponseEntity.ok(playerService.findAll(pageable));
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) int size) {
+        return ResponseEntity.ok(playerService.findAll(page, size));
     }
 
     /**
      * Updates an existing player.
      *
-     * @param id  the ID of the player to update
+     * @param id      the ID of the player to update
      * @param request the player data transfer object containing the updated player information
      * @return ResponseEntity containing the updated player with HTTP status 200 (OK)
      */
@@ -99,24 +93,6 @@ public class PlayerController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         playerService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Retrieves statistics for a specific player.
-     *
-     * @param id the ID of the player
-     * @return ResponseEntity with player's stats (goals, matches, goals per match)
-     */
-    @GetMapping("/{id}/stats")
-    public ResponseEntity<Map<String, Object>> getStats(@PathVariable Long id) {
-        PlayerResponseDTO player = playerService.findById(id);
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("goals", player.getGoals());
-        stats.put("matches", player.getPlayerMatches());
-        stats.put("goalsPerMatch", player.getPlayerMatches() > 0 ?
-                (double) player.getGoals() / player.getPlayerMatches() : 0);
-
-        return ResponseEntity.ok(stats);
     }
 
     /**

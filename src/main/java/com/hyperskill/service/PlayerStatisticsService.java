@@ -1,26 +1,18 @@
 package com.hyperskill.service;
 
-import com.hyperskill.model.dto.PlayerAvgGoalsResponse;
-import com.hyperskill.model.dto.PlayerGoalsResponse;
-import com.hyperskill.model.dto.PlayerMatchesResponce;
-import com.hyperskill.model.dto.PlayerResponseDTO;
-import com.hyperskill.model.entity.Goal;
-import com.hyperskill.model.entity.Match;
-import com.hyperskill.model.entity.Player;
-import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.PlayerNotFoundException;
-import com.hyperskill.exception.TeamNotFoundException;
-import com.hyperskill.model.mapper.PlayerMapper;
+import com.hyperskill.model.dto.PlayerStatisticsResponseDTO;
+import com.hyperskill.model.dto.PlayerStatsDTO;
+import com.hyperskill.model.entity.Player;
 import com.hyperskill.repository.PlayerRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class PlayerStatisticsService {
@@ -30,93 +22,76 @@ public class PlayerStatisticsService {
         this.playerRepository = playerRepository;
     }
 
-    public Page<PlayerResponseDTO> getTopPlayersByScoredGoals(int page, int size) {
-        Pageable sorted = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "goals"));
-        return playerRepository.findAll(sorted).map(PlayerMapper::toDTO);
-    }
+    public PlayerStatisticsResponseDTO getStatisticsForPlayer(Long playerId) {
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new PlayerNotFoundException("Player with id = " + playerId + " not found"));
 
-    public Page<PlayerResponseDTO> getTopPlayersByMatches(int page, int size) {
-        Pageable sorted = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "playerMatches"));
-        return playerRepository.findAll(sorted).map(PlayerMapper::toDTO);
-    }
-
-    public PlayerGoalsResponse getScoredGoalsPerYear(Long id, Integer year) {
-        if (year == null) {
-            year = LocalDate.now().getYear();
-        }
-
-        int amountGoals = 0;
-
-        Player player = playerRepository
-                .findById(id)
-                .orElseThrow(() -> new PlayerNotFoundException("Player with id: " + id + " not found"));
-
-        Team currTeam = player.getTeam();
-        if (currTeam == null) {
-            throw new TeamNotFoundException("Team of player with id: " + id + " not found");
-        }
-
-        //counting goals scored in HomeMatches
-        for (Match match : getTotalMatches(currTeam)) {
-            if (match.getMatchDate().getYear() == year) {
-                for (Goal goal : match.getGoals()) {
-                    if (goal.getPlayer().equals(player)) {
-                        amountGoals++;
-                    }
-                }
-            }
-        }
-        return new PlayerGoalsResponse(id, year, amountGoals);
-    }
-
-    public PlayerMatchesResponce getMatchesPerYear(Long id, Integer year) {
-        if (year == null) {
-            year = LocalDate.now().getYear();
-        }
-
-        int amountPlayedMatches = 0;
-
-        Player player = playerRepository
-                .findById(id)
-                .orElseThrow(() -> new PlayerNotFoundException("Player with id: " + id + " not found"));
-
-        Team currTeam = player.getTeam();
-        if (currTeam == null) {
-            throw new TeamNotFoundException("Team of player with id: " + id + " not found");
-        }
-
-        for (Match match : getTotalMatches(currTeam)) {
-            if (match.getMatchDate().getYear() == year) {
-                amountPlayedMatches++;
-            }
-        }
-        return new PlayerMatchesResponce(id, year, amountPlayedMatches);
-    }
-
-    public PlayerAvgGoalsResponse getAverageScoredGoals(Long id) {
-        Player player = playerRepository
-                .findById(id)
-                .orElseThrow(() -> new PlayerNotFoundException("Player with id: " + id + " not found"));
+        int goals = player.getGoals().size();
         int matches = player.getPlayerMatches().size();
-        double avgGoals = matches == 0 ? 0.0 : (double) player.getGoals().size() / matches;
-        return new PlayerAvgGoalsResponse(id, 0, avgGoals);
+        double avg = matches == 0 ? 0.0 : (double) goals / matches;
+
+        PlayerStatisticsResponseDTO dto = new PlayerStatisticsResponseDTO();
+        dto.setPlayerId(player.getId());
+        dto.setFullName(player.getFirstName() + " " + player.getLastName());
+        dto.setTotalGoals(goals);
+        dto.setTotalMatches(matches);
+        dto.setAvgGoalsPerMatch(avg);
+
+        return dto;
     }
 
-    public PlayerAvgGoalsResponse getAverageScoredGoalsPerYear(Long id, Integer year) {
-        if (year == null) {
-            year = LocalDate.now().getYear();
+    public Page<PlayerStatsDTO> getTopStats(String metric, Integer year, int page, int size, String sortDir) {
+        List<Player> players = playerRepository.findAll();
+        List<PlayerStatsDTO> result = new ArrayList<>();
+
+        for (Player player : players) {
+            int value = switch (metric) {
+                case "goals" -> (year == null) ?
+                        player.getGoals().size() :
+                        (int) player.getGoals().stream()
+                                .filter(goal -> goal.getMatch().getMatchDate().getYear() == year)
+                                .count();
+                case "matches" -> (year == null) ?
+                        player.getPlayerMatches().size() :
+                        (int) player.getPlayerMatches().stream()
+                                .filter(pm -> pm.getMatch().getMatchDate().getYear() == year)
+                                .count();
+                case "avgGoals" -> {
+                    long goals = (year == null) ? player.getGoals().size() :
+                            player.getGoals().stream()
+                                    .filter(goal -> goal.getMatch().getMatchDate().getYear() == year)
+                                    .count();
+                    long matches = (year == null) ? player.getPlayerMatches().size() :
+                            player.getPlayerMatches().stream()
+                                    .filter(pm -> pm.getMatch().getMatchDate().getYear() == year)
+                                    .count();
+                    yield (matches == 0) ? 0 : (int) ((double) goals / matches * 100); // preserve precision
+                }
+                default -> throw new IllegalArgumentException("Invalid metric: " + metric);
+            };
+
+            if (value > 0) {
+                PlayerStatsDTO dto = new PlayerStatsDTO();
+                dto.setPlayerId(player.getId());
+                dto.setFullName(player.getLastName() + " " + player.getFirstName());
+                dto.setValue(value);
+
+                result.add(dto);
+            }
         }
 
-        int matchesPerYear = getMatchesPerYear(id, year).matches();
-        double avgGoalsPerYear = matchesPerYear == 0 ? 0.0
-                : (double) getScoredGoalsPerYear(id, year).goals() / matchesPerYear;
-        return new PlayerAvgGoalsResponse(id, year, avgGoalsPerYear);
-    }
+        Comparator<PlayerStatsDTO> comparator = Comparator.comparing(PlayerStatsDTO::getValue);
+        if ("desc".equalsIgnoreCase(sortDir)) {
+            comparator = comparator.reversed();
+        }
+        comparator = comparator.thenComparing(dto -> dto.getFullName().toLowerCase());
 
-    private Set<Match> getTotalMatches(Team team) {
-        Set<Match> matches = new HashSet<>();
-        matches.addAll(team.getHomeMatches());
-        matches.addAll(team.getAwayMatches());
-        return matches;
+        result.sort(comparator);
+
+        int start = Math.min(page * size, result.size());
+        int end = Math.min(start + size, result.size());
+        List<PlayerStatsDTO> pageContent = result.subList(start, end);
+
+        return new PageImpl<>(pageContent, PageRequest.of(page, size), result.size());
     }
 }

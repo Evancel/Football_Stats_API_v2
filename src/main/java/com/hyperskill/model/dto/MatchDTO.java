@@ -1,7 +1,6 @@
 package com.hyperskill.model.dto;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class MatchDTO {
     private Long id;
@@ -61,6 +60,4 @@ public class MatchDTO {
     public void setMatchDate(LocalDateTime matchDate){
         this.matchDate = matchDate;
     }
-
-
 }

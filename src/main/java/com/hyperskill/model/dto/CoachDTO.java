@@ -53,5 +53,4 @@ public class CoachDTO {
     public void setPlayedMatches(int playedMatches) {
         this.playedMatches = playedMatches;
     }
-
 }
