@@ -39,7 +39,7 @@ public class PlayerMatchController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PlayerMatchResponseDTO> update(@PathVariable Long id,
-                                                 @RequestBody @Valid PlayerMatchRequestDTO requestDTO) {
+                                                         @RequestBody @Valid PlayerMatchRequestDTO requestDTO) {
         return ResponseEntity.ok(playerMatchService.update(id, requestDTO));
     }
 

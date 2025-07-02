@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 public class PlayerMatch {
     @Id
@@ -39,5 +41,26 @@ public class PlayerMatch {
 
     public void setMatch(Match match) {
         this.match = match;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerMatch{" +
+                "id=" + id +
+                ", player=" + player +
+                ", match=" + match +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerMatch that = (PlayerMatch) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

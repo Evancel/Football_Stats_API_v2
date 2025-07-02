@@ -20,14 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final TeamRepository teamRepository;
-    private final PlayerStatisticsService playerStatisticsService;
 
     public PlayerService(PlayerRepository playerRepository,
-                         TeamRepository teamRepository,
-                         PlayerStatisticsService playerStatisticsService) {
+                         TeamRepository teamRepository) {
         this.playerRepository = playerRepository;
         this.teamRepository = teamRepository;
-        this.playerStatisticsService = playerStatisticsService;
     }
 
     @Transactional

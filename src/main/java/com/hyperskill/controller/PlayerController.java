@@ -7,15 +7,11 @@ import com.hyperskill.service.PlayerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/players")
@@ -76,7 +72,7 @@ public class PlayerController {
     /**
      * Updates an existing player.
      *
-     * @param id  the ID of the player to update
+     * @param id      the ID of the player to update
      * @param request the player data transfer object containing the updated player information
      * @return ResponseEntity containing the updated player with HTTP status 200 (OK)
      */
