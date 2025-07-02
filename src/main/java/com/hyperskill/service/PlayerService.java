@@ -1,19 +1,20 @@
 package com.hyperskill.service;
 
-import com.hyperskill.model.dto.*;
-import com.hyperskill.model.entity.Player;
-import com.hyperskill.model.entity.Team;
 import com.hyperskill.exception.PlayerNotFoundException;
 import com.hyperskill.exception.TeamNotFoundException;
+import com.hyperskill.model.dto.PlayerRequestDTO;
+import com.hyperskill.model.dto.PlayerResponseDTO;
+import com.hyperskill.model.entity.Player;
+import com.hyperskill.model.entity.Team;
 import com.hyperskill.model.mapper.PlayerMapper;
 import com.hyperskill.repository.PlayerRepository;
 import com.hyperskill.repository.TeamRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class PlayerService {
@@ -69,7 +70,8 @@ public class PlayerService {
         return PlayerMapper.toDTO(player);
     }
 
-    public Page<PlayerResponseDTO> findAll(Pageable pageable) {
+    public Page<PlayerResponseDTO> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("lastName").and(Sort.by("firstName")));
         Page<Player> players = playerRepository.findAll(pageable);
         return players.map(PlayerMapper::toDTO);
     }
@@ -79,38 +81,5 @@ public class PlayerService {
             throw new PlayerNotFoundException("Player with id: " + id + " not found");
         }
         playerRepository.deleteById(id);
-    }
-
-    private Team findOrCreateTeam(String teamName) {
-        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
-        Team team = new Team();
-        team.setName(teamName);
-        return optionalTeam.orElseGet(() ->
-                teamRepository.save(team));
-    }
-
-    //statistics
-    public Page<PlayerResponseDTO> getTopPlayersByScoredGoals(int page, int size) {
-        return playerStatisticsService.getTopPlayersByScoredGoals(page, size);
-    }
-
-    public Page<PlayerResponseDTO> getTopPlayersByMatches(int page, int size) {
-        return playerStatisticsService.getTopPlayersByMatches(page, size);
-    }
-
-    public PlayerGoalsResponse getScoredGoalsPerYear(Long id, Integer year) {
-        return playerStatisticsService.getScoredGoalsPerYear(id, year);
-    }
-
-    public PlayerMatchesResponce getMatchesPerYear(Long id, Integer year) {
-        return playerStatisticsService.getMatchesPerYear(id, year);
-    }
-
-    public PlayerAvgGoalsResponse getAverageScoredGoals(Long id) {
-        return playerStatisticsService.getAverageScoredGoals(id);
-    }
-
-    public PlayerAvgGoalsResponse getAverageScoredGoalsPerYear(Long id, Integer year) {
-        return playerStatisticsService.getAverageScoredGoalsPerYear(id, year);
     }
 }
