@@ -120,12 +120,6 @@ gradle bootRun
 ```
 
 Or via your preferred IDE (e.g., IntelliJ IDEA).
-
-Access the H2 Console (for local DB inspection):
-```
-http://localhost:8080/h2-console
-```
-
 ---
 
 ## 🧪 Testing
